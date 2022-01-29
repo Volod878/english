@@ -1,13 +1,15 @@
 package ru.volod878.english.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Table(name = "vocabulary")
 public class Vocabulary {
     @Id

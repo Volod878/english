@@ -1,15 +1,17 @@
 package ru.volod878.english.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Table(name = "translate")
 public class Translate {
     @Id
