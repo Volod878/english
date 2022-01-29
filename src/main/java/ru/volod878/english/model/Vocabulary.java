@@ -1,21 +1,26 @@
 package ru.volod878.english.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "vocabulary")
 public class Vocabulary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private int id;
+    private Integer id;
 
     @Column(name = "word", nullable = false)
     private String word;
@@ -31,4 +36,8 @@ public class Vocabulary {
 
     @Column(name = "sound_uk_path", nullable = false)
     private String soundUkPath;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vocabulary")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Translate> translates;
 }

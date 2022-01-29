@@ -8,4 +8,5 @@ import ru.volod878.english.model.Vocabulary;
 @Repository
 @Transactional(readOnly = true)
 public interface VocabularyRepository extends JpaRepository<Vocabulary, Integer> {
+    Vocabulary findByWord(String word);
 }
