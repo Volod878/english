@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity(name = "vocabulary")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Vocabulary {
