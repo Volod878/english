@@ -26,9 +26,9 @@ public class Vocabulary {
     @Column(name = "transcription_uk", nullable = false)
     private String transcriptionUk;
 
-    @Column(name = "sound_us", nullable = false)
-    private String soundUs;
+    @Column(name = "sound_us_path", nullable = false)
+    private String soundUsPath;
 
-    @Column(name = "sound_uk", nullable = false)
-    private String soundUk;
+    @Column(name = "sound_uk_path", nullable = false)
+    private String soundUkPath;
 }
