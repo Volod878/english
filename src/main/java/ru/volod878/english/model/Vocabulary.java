@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
-@Entity(name = "vocabulary")
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "vocabulary")
 public class Vocabulary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,4 @@ public class Vocabulary {
 
     @Column(name = "sound_uk", nullable = false)
     private String soundUk;
-
-    @Column(name = "translate", nullable = false)
-    private List<String> translate;
 }
