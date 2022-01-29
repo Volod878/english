@@ -17,4 +17,5 @@ public class VocabularyDto {
     private String soundUs;
     private String soundUk;
     private List<Translate> translates;
+    private List<String> translatesList;
 }

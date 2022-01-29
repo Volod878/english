@@ -1,7 +1,10 @@
 package ru.volod878.english.util;
 
 import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.model.Translate;
 import ru.volod878.english.model.Vocabulary;
+
+import java.util.stream.Collectors;
 
 public class VocabularyUtil {
     public static Vocabulary createNewFromTo(VocabularyDto dto) {
@@ -22,6 +25,7 @@ public class VocabularyUtil {
                 vocabulary.getTranscriptionUk(),
                 vocabulary.getSoundUsPath(),
                 vocabulary.getSoundUkPath(),
-                vocabulary.getTranslates());
+                vocabulary.getTranslates(),
+                vocabulary.getTranslates().stream().map(Translate::getTranslate).collect(Collectors.toList()));
     }
 }
