@@ -13,24 +13,25 @@ import java.util.stream.Collectors;
 
 public class WordParser {
     @Value("${url-word-transcription-and-translate}")
-    private static String urlSoundUk = "https://wooordhunt.ru/word";
+    private static String urlSoundUk;
 
-    public static void main(String[] args) throws IOException {
-        parse("Elevator");
+    public static List<String> parseTranscriptions(String word) throws IOException {
+        Document document = Jsoup.connect(urlSoundUk + "/" + word).get();
+        return getTranscriptions(document.select("span.transcription"));
     }
 
-    public static void parse(String word) throws IOException {
+    public static List<String> parseTranslates(String word) throws IOException {
         Document document = Jsoup.connect(urlSoundUk + "/" + word).get();
-        Elements transcriptionEls = document.select("span.transcription");
+        return getTranslates(document.selectFirst("div.t_inline_en"));
+    }
 
-        List<String> transcription = transcriptionEls.eachText();
-        System.out.println(transcription);
+    private static List<String> getTranscriptions(Elements elements) {
+        return elements.eachText();
+    }
 
-        Element translateEls = document.selectFirst("div.t_inline_en");
-
-        List<String> translates = Arrays.stream(translateEls.text().split(","))
+    private static List<String> getTranslates(Element element) {
+        return Arrays.stream(element.text().split(","))
                 .map(String::trim)
                 .collect(Collectors.toList());
-        System.out.println(translates);
     }
 }
