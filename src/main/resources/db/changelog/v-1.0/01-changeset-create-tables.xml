@@ -23,22 +23,4 @@
                      path="01-drop-vocabulary-table.sql"/>
         </rollback>
     </changeSet>
-    <changeSet id="2" author="vlukashov">
-        <sqlFile dbms="postgresql"
-                 encoding="utf8"
-                 endDelimiter="\nGO"
-                 relativeToChangelogFile="true"
-                 splitStatements="true"
-                 stripComments="true"
-                 path="02-create-translate-table.sql"/>
-        <rollback>
-            <sqlFile dbms="postgresql"
-                     encoding="utf8"
-                     endDelimiter="\nGO"
-                     relativeToChangelogFile="true"
-                     splitStatements="true"
-                     stripComments="true"
-                     path="02-drop-translate-table.sql"/>
-        </rollback>
-    </changeSet>
 </databaseChangeLog>

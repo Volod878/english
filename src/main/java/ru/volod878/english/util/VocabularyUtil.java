@@ -1,20 +1,17 @@
 package ru.volod878.english.util;
 
 import ru.volod878.english.dto.VocabularyDto;
-import ru.volod878.english.model.Translate;
 import ru.volod878.english.model.Vocabulary;
 
-import java.util.stream.Collectors;
-
 public class VocabularyUtil {
-    public static Vocabulary createNewFromTo(VocabularyDto dto) {
+    public static Vocabulary createNewFromTo(String soundUrl, VocabularyDto dto) {
         return new Vocabulary(
                 null,
                 dto.getWord(),
                 dto.getTranscriptionUs(),
                 dto.getTranscriptionUk(),
-                dto.getSoundUs(),
-                dto.getSoundUk(),
+                ParserMp3.parseUs(soundUrl, dto.getWord()),
+                ParserMp3.parseUk(soundUrl, dto.getWord()),
                 dto.getTranslates());
     }
 
@@ -23,9 +20,6 @@ public class VocabularyUtil {
                 vocabulary.getWord(),
                 vocabulary.getTranscriptionUs(),
                 vocabulary.getTranscriptionUk(),
-                vocabulary.getSoundUsPath(),
-                vocabulary.getSoundUkPath(),
-                vocabulary.getTranslates(),
-                vocabulary.getTranslates().stream().map(Translate::getTranslate).collect(Collectors.toList()));
+                vocabulary.getTranslates());
     }
 }
