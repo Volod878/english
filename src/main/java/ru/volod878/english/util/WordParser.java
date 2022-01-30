@@ -9,38 +9,32 @@ import ru.volod878.english.dto.VocabularyDto;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WordParser {
-
-    private static final Map<String, Document> documents = new ConcurrentHashMap<>();
+    private static Document document;
 
     public static VocabularyDto parse(String url, String word) {
-        documents.computeIfAbsent(word, key -> {
-            try {
-                return Jsoup.connect(url + "/" + word).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
+        try {
+            document = Jsoup.connect(url + "/" + word).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         VocabularyDto dto = new VocabularyDto();
         dto.setWord(word);
-        dto.setTranscriptionUs(parseTranscriptions(word).get(0));
-        dto.setTranscriptionUk(parseTranscriptions(word).get(1));
-        dto.setTranslates(parseTranslates(word));
+        dto.setTranscriptionUs(parseTranscriptions().get(0));
+        dto.setTranscriptionUk(parseTranscriptions().get(1));
+        dto.setTranslates(parseTranslates());
         return dto;
     }
 
-    private static List<String> parseTranscriptions(String word) {
-        return getTranscriptions(documents.get(word).select("span.transcription"));
+    private static List<String> parseTranscriptions() {
+        return getTranscriptions(document.select("span.transcription"));
     }
 
-    private static String parseTranslates(String word) {
-        return getTranslates(Objects.requireNonNull(documents.get(word).selectFirst("div.t_inline_en")));
+    private static String parseTranslates() {
+        return getTranslates(Objects.requireNonNull(document.selectFirst("div.t_inline_en")));
     }
 
     private static List<String> getTranscriptions(Elements elements) {

@@ -24,12 +24,13 @@ public class VocabularyService {
     public VocabularyDto getByWord(String word) {
         Vocabulary vocabulary = repository.findByWord(word);
         if (vocabulary == null) {
-            return parserService.parse(word);
+            return create(parserService.parse(word));
         }
         return VocabularyUtil.asTo(vocabulary);
     }
 
-    public int create(VocabularyDto vocabularyDto) {
-        return repository.save(VocabularyUtil.createNewFromTo(properties.getSoundUrl(), vocabularyDto)).getId();
+    public VocabularyDto create(VocabularyDto vocabularyDto) {
+        return VocabularyUtil.asTo(
+                repository.save(VocabularyUtil.createNewFromTo(properties.getSoundUrl(), vocabularyDto)));
     }
 }
