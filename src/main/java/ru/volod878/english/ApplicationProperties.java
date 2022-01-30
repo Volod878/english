@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationProperties {
     @Value("${url-word-transcription-and-translate}")
-    private String wordUrl = "https://wooordhunt.ru/word";
+    private String wordUrl;
 
     @Value("${url-sound}")
-    private String soundUrl = "https://wooordhunt.ru/data/sound/sow";
+    private String soundUrl;
 }
