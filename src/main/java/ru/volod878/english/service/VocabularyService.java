@@ -2,11 +2,13 @@ package ru.volod878.english.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.ApplicationProperties;
 import ru.volod878.english.dto.VocabularyDto;
 import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.repository.VocabularyRepository;
-import ru.volod878.english.util.VocabularyUtil;
+
+import static ru.volod878.english.util.VocabularyUtil.*;
 
 @Service
 public class VocabularyService {
@@ -23,14 +25,17 @@ public class VocabularyService {
 
     public VocabularyDto getByWord(String word) {
         Vocabulary vocabulary = repository.findByWord(word);
-        if (vocabulary == null) {
-            return create(parserService.parse(word));
-        }
-        return VocabularyUtil.asTo(vocabulary);
+        return vocabulary == null ? create(parserService.parse(word)) : asTo(vocabulary);
     }
 
     public VocabularyDto create(VocabularyDto vocabularyDto) {
-        return VocabularyUtil.asTo(
-                repository.save(VocabularyUtil.createNewFromTo(properties.getSoundUrl(), vocabularyDto)));
+        return asTo(repository.save(createNewFromTo(properties.getSoundUrl(), vocabularyDto)));
+    }
+
+    public StreamingResponseBody getMp3(String location, String word) {
+        Vocabulary vocabulary = repository.findByWord(word);
+        return getStreamingMp3(location.equalsIgnoreCase("uk") ?
+                vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()
+        );
     }
 }
