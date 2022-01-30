@@ -8,6 +8,9 @@ import ru.volod878.english.dto.VocabularyDto;
 import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.repository.VocabularyRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static ru.volod878.english.util.VocabularyUtil.*;
 
 @Service
@@ -24,8 +27,8 @@ public class VocabularyService {
     }
 
     public VocabularyDto getByWord(String word) {
-        Vocabulary vocabulary = repository.findByWord(word);
-        return vocabulary == null ? create(parserService.parse(word)) : asTo(vocabulary);
+        Vocabulary vocabulary = repository.findByWord(word.toLowerCase());
+        return vocabulary == null ? create(parserService.parse(word.toLowerCase())) : asTo(vocabulary);
     }
 
     public VocabularyDto create(VocabularyDto vocabularyDto) {
@@ -37,5 +40,15 @@ public class VocabularyService {
         return getStreamingMp3(location.equalsIgnoreCase("uk") ?
                 vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()
         );
+    }
+
+    public List<VocabularyDto> addAll(List<String> words) {
+        return words.stream().map(word -> {
+            try {
+                return getByWord(word);
+            } catch (Exception ignored) {
+                return new VocabularyDto(word, null, null, null);
+            }
+        }).filter(dto -> dto.getTranslates() == null).collect(Collectors.toList());
     }
 }

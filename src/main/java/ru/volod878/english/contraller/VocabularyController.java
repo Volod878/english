@@ -1,13 +1,12 @@
 package ru.volod878.english.contraller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.dto.VocabularyDto;
 import ru.volod878.english.service.VocabularyService;
+
+import java.util.List;
 
 @RestController
 public class VocabularyController {
@@ -27,5 +26,10 @@ public class VocabularyController {
     public StreamingResponseBody getMp3(@PathVariable String location, @RequestParam String fileName) {
         return vocabularyService.getMp3(location, fileName);
 
+    }
+
+    @PostMapping()
+    public List<VocabularyDto> addAll(@RequestBody List<String> words) {
+        return vocabularyService.addAll(words);
     }
 }

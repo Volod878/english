@@ -7,7 +7,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import ru.volod878.english.dto.VocabularyDto;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,16 +15,17 @@ public class WordParser {
     private static Document document;
 
     public static VocabularyDto parse(String url, String word) {
+        VocabularyDto dto = new VocabularyDto();
         try {
             document = Jsoup.connect(url + "/" + word).get();
-        } catch (IOException e) {
+            dto.setWord(word);
+            dto.setTranscriptionUs(parseTranscriptions().get(0));
+            dto.setTranscriptionUk(parseTranscriptions().get(1));
+            dto.setTranslates(parseTranslates());
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        VocabularyDto dto = new VocabularyDto();
-        dto.setWord(word);
-        dto.setTranscriptionUs(parseTranscriptions().get(0));
-        dto.setTranscriptionUk(parseTranscriptions().get(1));
-        dto.setTranslates(parseTranslates());
         return dto;
     }
 

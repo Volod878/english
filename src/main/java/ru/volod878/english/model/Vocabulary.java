@@ -19,7 +19,7 @@ public class Vocabulary {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "word", nullable = false)
+    @Column(name = "word", unique = true, nullable = false)
     private String word;
 
     @Column(name = "transcription_us", nullable = false)

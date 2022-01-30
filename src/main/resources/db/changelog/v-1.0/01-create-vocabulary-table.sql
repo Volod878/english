@@ -1,7 +1,7 @@
 CREATE TABLE vocabulary
 (
     id               BIGSERIAL NOT NULL,
-    word             TEXT      NOT NULL,
+    word             TEXT      NOT NULL UNIQUE,
     transcription_us TEXT      NOT NULL,
     transcription_uk TEXT      NOT NULL,
     sound_us_path    TEXT      NOT NULL,
