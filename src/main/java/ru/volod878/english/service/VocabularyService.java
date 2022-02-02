@@ -9,6 +9,7 @@ import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.repository.VocabularyRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.volod878.english.util.VocabularyUtil.*;
@@ -26,9 +27,13 @@ public class VocabularyService {
         this.properties = properties;
     }
 
-    public VocabularyDto getByWord(String word) {
+    public VocabularyDto getOrCreateByWord(String word) {
         Vocabulary vocabulary = repository.findByWord(word.toLowerCase());
         return vocabulary == null ? create(parserService.parse(word.toLowerCase())) : asTo(vocabulary);
+    }
+
+    public Vocabulary getByWord(String word) {
+        return repository.findByWord(word.toLowerCase());
     }
 
     public VocabularyDto create(VocabularyDto vocabularyDto) {
@@ -45,10 +50,24 @@ public class VocabularyService {
     public List<VocabularyDto> addAll(List<String> words) {
         return words.stream().map(word -> {
             try {
-                return getByWord(word);
+                return getOrCreateByWord(word);
             } catch (Exception ignored) {
                 return new VocabularyDto(word, null, null, null);
             }
         }).filter(dto -> dto.getTranslates() == null).collect(Collectors.toList());
+    }
+
+    public List<String> getMp3Error(String location, List<String> words) {
+        return words.stream()
+                .map(word -> {
+                    try {
+                        if (getMp3(location, word.toLowerCase()) == null) throw new Exception();
+                    } catch (Exception ex) {
+                        return getByWord(word) == null ? null : word;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

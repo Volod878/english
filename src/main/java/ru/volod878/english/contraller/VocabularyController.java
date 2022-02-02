@@ -19,7 +19,7 @@ public class VocabularyController {
 
     @GetMapping
     public VocabularyDto get(@RequestParam String word) {
-        return vocabularyService.getByWord(word);
+        return vocabularyService.getOrCreateByWord(word);
     }
 
     @GetMapping("/{location}/mp3")
@@ -31,5 +31,10 @@ public class VocabularyController {
     @PostMapping()
     public List<VocabularyDto> addAll(@RequestBody List<String> words) {
         return vocabularyService.addAll(words);
+    }
+
+    @GetMapping("/{location}/mp3error")
+    public List<String> getError(@PathVariable String location, @RequestBody List<String> words) {
+        return vocabularyService.getMp3Error(location, words);
     }
 }
