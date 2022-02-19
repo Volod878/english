@@ -1,6 +1,6 @@
 package ru.volod878.english.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.ApplicationProperties;
@@ -14,39 +14,40 @@ import java.util.stream.Collectors;
 
 import static ru.volod878.english.util.VocabularyUtil.*;
 
+@RequiredArgsConstructor
 @Service
-public class VocabularyService {
+public class VocabularyService implements IVocabularyService {
     private final VocabularyRepository repository;
     private final ParserService parserService;
     private final ApplicationProperties properties;
 
-    @Autowired
-    public VocabularyService(VocabularyRepository repository, ParserService parserService, ApplicationProperties properties) {
-        this.repository = repository;
-        this.parserService = parserService;
-        this.properties = properties;
-    }
-
+    @Override
     public VocabularyDto getOrCreateByWord(String word) {
         Vocabulary vocabulary = repository.findByWord(word.toLowerCase());
         return vocabulary == null ? create(parserService.parse(word.toLowerCase())) : asTo(vocabulary);
     }
 
+    @Override
     public Vocabulary getByWord(String word) {
         return repository.findByWord(word.toLowerCase());
     }
 
+    @Override
     public VocabularyDto create(VocabularyDto vocabularyDto) {
         return asTo(repository.save(createNewFromTo(properties.getSoundUrl(), vocabularyDto)));
     }
 
+    // TODO Запускать используя enum
+    @Override
     public StreamingResponseBody getMp3(String location, String word) {
         Vocabulary vocabulary = repository.findByWord(word);
-        return getStreamingMp3(location.equalsIgnoreCase("uk") ?
-                vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()
+        return getStreamingMp3(
+                location.equalsIgnoreCase("uk") ?
+                        vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()
         );
     }
 
+    @Override
     public List<VocabularyDto> addAll(List<String> words) {
         return words.stream().map(word -> {
             try {
@@ -57,6 +58,7 @@ public class VocabularyService {
         }).filter(dto -> dto.getTranslates() == null).collect(Collectors.toList());
     }
 
+    @Override
     public List<String> getMp3Error(String location, List<String> words) {
         return words.stream()
                 .map(word -> {

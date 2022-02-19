@@ -1,5 +1,6 @@
 package ru.volod878.english.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,6 +11,7 @@ import ru.volod878.english.dto.VocabularyDto;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Component
 public class WordParser {
     private static Document document;
@@ -23,7 +25,7 @@ public class WordParser {
             dto.setTranscriptionUk(parseTranscriptions().get(1));
             dto.setTranslates(parseTranslates());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Не удалось создать dto для слова \"{}\". url = {}", word, url, e);
             return null;
         }
         return dto;

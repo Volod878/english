@@ -1,16 +1,18 @@
-package ru.volod878.english.contraller;
+package ru.volod878.english.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.service.IVocabularyService;
 import ru.volod878.english.service.VocabularyService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/vocabulary")
 public class VocabularyController {
-    private final VocabularyService vocabularyService;
+    private final IVocabularyService vocabularyService;
 
     @Autowired
     public VocabularyController(VocabularyService vocabularyService) {
@@ -25,7 +27,6 @@ public class VocabularyController {
     @GetMapping("/{location}/mp3")
     public StreamingResponseBody getMp3(@PathVariable String location, @RequestParam String fileName) {
         return vocabularyService.getMp3(location, fileName);
-
     }
 
     @PostMapping()

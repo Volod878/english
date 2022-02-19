@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class ApplicationProperties {
     @Value("${url-word-transcription-and-translate}")
     private String wordUrl;
-
     @Value("${url-sound}")
     private String soundUrl;
 }
