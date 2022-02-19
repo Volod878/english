@@ -25,7 +25,7 @@ public class WordParser {
             dto.setTranslates(parseTranslates());
         } catch (Exception e) {
             log.error("Не удалось создать dto для слова \"{}\". url = {}", word, url, e);
-            throw new FailedToCreateDtoException("Не удалось создать dto");
+            throw new FailedToCreateDtoException("Не удалось обработать запрос");
         }
         return dto;
     }
