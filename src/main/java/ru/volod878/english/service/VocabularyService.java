@@ -43,6 +43,9 @@ public class VocabularyService implements IVocabularyService {
     @Override
     public StreamingResponseBody getMp3(Location location, String word) {
         Vocabulary vocabulary = repository.findByWord(word);
+        if (Objects.isNull(vocabulary)) {
+            throw new NullPointerException("Слово не найдено");
+        }
         return getStreamingMp3(
                 location.equals(Location.UK) ?
                         vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()

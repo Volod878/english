@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.exception.FailedAudioStreamingException;
 import ru.volod878.english.model.Vocabulary;
 
 import java.io.FileInputStream;
@@ -33,14 +34,13 @@ public class VocabularyUtil {
                 vocabulary.getTranslates());
     }
 
-    // TODO добавить обработку исключений
     public static StreamingResponseBody getStreamingMp3(String wordPath) {
         try {
             InputStream audioFileStream = new FileInputStream(wordPath);
             return (os) -> readAndWrite(audioFileStream, os);
         } catch (IOException e) {
             log.error("Неудачная попытка получить аудио файл. wordPath = {}", wordPath, e);
-            return null;
+            throw new FailedAudioStreamingException("Неудачная попытка получить аудио файл");
         }
     }
 

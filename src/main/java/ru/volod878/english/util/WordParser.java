@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.exception.FailedToCreateDtoException;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +25,7 @@ public class WordParser {
             dto.setTranslates(parseTranslates());
         } catch (Exception e) {
             log.error("Не удалось создать dto для слова \"{}\". url = {}", word, url, e);
-            return null;
+            throw new FailedToCreateDtoException("Не удалось создать dto");
         }
         return dto;
     }
