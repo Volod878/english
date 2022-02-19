@@ -1,41 +1,25 @@
 package ru.volod878.english.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.dto.VocabularyDto;
 import ru.volod878.english.service.IVocabularyService;
-import ru.volod878.english.service.VocabularyService;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/vocabulary")
 public class VocabularyController {
     private final IVocabularyService vocabularyService;
-
-    @Autowired
-    public VocabularyController(VocabularyService vocabularyService) {
-        this.vocabularyService = vocabularyService;
-    }
 
     @GetMapping
     public VocabularyDto get(@RequestParam String word) {
         return vocabularyService.getOrCreateByWord(word);
     }
 
-    @GetMapping("/{location}/mp3")
-    public StreamingResponseBody getMp3(@PathVariable String location, @RequestParam String fileName) {
-        return vocabularyService.getMp3(location, fileName);
-    }
-
     @PostMapping()
-    public List<VocabularyDto> addAll(@RequestBody List<String> words) {
-        return vocabularyService.addAll(words);
-    }
-
-    @GetMapping("/{location}/mp3error")
-    public List<String> getError(@PathVariable String location, @RequestBody List<String> words) {
-        return vocabularyService.getMp3Error(location, words);
+    public List<VocabularyDto> getAll(@RequestBody List<String> words) {
+        return vocabularyService.getAll(words);
     }
 }

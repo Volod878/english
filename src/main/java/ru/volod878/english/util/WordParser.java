@@ -5,14 +5,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.stereotype.Component;
 import ru.volod878.english.dto.VocabularyDto;
 
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-@Component
 public class WordParser {
     private static Document document;
 

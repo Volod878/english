@@ -35,7 +35,8 @@ public class VocabularyUtil {
 
     // TODO добавить обработку исключений
     public static StreamingResponseBody getStreamingMp3(String wordPath) {
-        try (InputStream audioFileStream = new FileInputStream(wordPath)) {
+        try {
+            InputStream audioFileStream = new FileInputStream(wordPath);
             return (os) -> readAndWrite(audioFileStream, os);
         } catch (IOException e) {
             log.error("Неудачная попытка получить аудио файл. wordPath = {}", wordPath, e);
