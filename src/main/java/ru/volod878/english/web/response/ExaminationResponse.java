@@ -3,6 +3,7 @@ package ru.volod878.english.web.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.volod878.english.web.dto.ExaminationDTO;
 
 import java.util.List;
 

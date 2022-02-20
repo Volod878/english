@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.volod878.english.ApplicationProperties;
-import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.util.WordParser;
 
 @Slf4j

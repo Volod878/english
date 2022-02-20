@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.exception.FailedToCreateDtoException;
 import ru.volod878.english.service.IVocabularyService;
 

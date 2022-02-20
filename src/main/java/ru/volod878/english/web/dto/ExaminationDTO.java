@@ -1,4 +1,4 @@
-package ru.volod878.english.web.response;
+package ru.volod878.english.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

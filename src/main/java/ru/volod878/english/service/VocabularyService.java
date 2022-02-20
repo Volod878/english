@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.ApplicationProperties;
-import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.repository.VocabularyRepository;
 import ru.volod878.english.type.Location;

@@ -5,7 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.exception.FailedToCreateDtoException;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package ru.volod878.english.service;
 
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import ru.volod878.english.dto.VocabularyDto;
+import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.type.Location;
 

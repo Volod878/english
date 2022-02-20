@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.volod878.english.model.Vocabulary;
 import ru.volod878.english.repository.VocabularyRepository;
-import ru.volod878.english.web.response.ExaminationDTO;
+import ru.volod878.english.web.dto.ExaminationDTO;
 import ru.volod878.english.web.response.ExaminationResponse;
 
 import java.util.Collections;
