@@ -1,4 +1,4 @@
-package ru.volod878.english.controller;
+package ru.volod878.english.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
