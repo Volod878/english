@@ -11,6 +11,7 @@ import ru.volod878.english.web.response.ExaminationResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class LearningService implements ILearningService {
     private final VocabularyRepository vocabularyRepository;
+
+    private static final String RESULT = "Вы перевели правильно %d слов(а) из %d";
 
     @Override
     public List<String> getFewWords(int limit) {
@@ -28,6 +31,11 @@ public class LearningService implements ILearningService {
 
     @Override
     public ExaminationResponse examination(Map<String, String> answers) {
+        answers.forEach((key, value) -> {
+            if (value.trim().isEmpty()) {
+                answers.put(key, null);
+            }});
+
         List<Vocabulary> vocabularies = vocabularyRepository.findByWordIn(answers.keySet());
 
         Map<Boolean, List<ExaminationDTO>> resultMap = vocabularies.stream()
@@ -35,11 +43,11 @@ public class LearningService implements ILearningService {
                         vocabulary.getWord(),
                         answers.get(vocabulary.getWord()),
                         vocabulary.getTranslates()))
-                .collect(Collectors.partitioningBy(dto -> dto.getTranslate().contains(dto.getAnswer())));
+                .collect(Collectors.partitioningBy(dto ->
+                        Objects.nonNull(dto.getAnswer()) && dto.getTranslate().contains(dto.getAnswer())));
 
-        String result = "Вы перевели правильно %d слов(а) из %d";
         return new ExaminationResponse(
-                String.format(result, resultMap.get(true).size(), vocabularies.size()),
+                String.format(RESULT, resultMap.get(true).size(), vocabularies.size()),
                 resultMap.get(true),
                 resultMap.get(false));
     }
