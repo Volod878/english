@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.volod878.english.domain.model.Vocabulary;
+import ru.volod878.english.domain.model.WordLearning;
 import ru.volod878.english.domain.repository.VocabularyRepository;
+import ru.volod878.english.domain.repository.WordLearningRepository;
 import ru.volod878.english.web.dto.ExaminationDTO;
 import ru.volod878.english.web.response.ExaminationResponse;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class LearningService implements ILearningService {
     private final VocabularyRepository vocabularyRepository;
+    private final WordLearningRepository wordLearningRepository;
 
     private static final String RESULT = "Вы правильно перевели %d слов(а) из %d";
 
@@ -42,6 +46,8 @@ public class LearningService implements ILearningService {
                         vocabulary.getTranslates()))
                 .collect(Collectors.partitioningBy(this::containsTranslation));
 
+        addStatistic(vocabularies, resultMap);
+
         return new ExaminationResponse(
                 String.format(RESULT, resultMap.get(true).size(), vocabularies.size()),
                 resultMap.get(true),
@@ -52,5 +58,19 @@ public class LearningService implements ILearningService {
         return Objects.nonNull(dto.getAnswer()) &&
                 Arrays.asList(dto.getTranslate().split(", "))
                         .contains(dto.getAnswer());
+    }
+
+    private void addStatistic(List<Vocabulary> vocabularies, Map<Boolean, List<ExaminationDTO>> resultMap) {
+        List<String> right = resultMap.get(true).stream()
+                .map(ExaminationDTO::getWord)
+                .collect(Collectors.toList());
+
+        vocabularies.forEach(vocabulary -> wordLearningRepository.save(
+                WordLearning.builder()
+                        .vocabulary(vocabulary)
+                        .answerIsRight(right.contains(vocabulary.getWord()))
+                        .insTime(LocalDateTime.now())
+                        .build()
+        ));
     }
 }
