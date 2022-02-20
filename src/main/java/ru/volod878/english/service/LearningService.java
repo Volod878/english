@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class LearningService implements ILearningService {
     private final VocabularyRepository vocabularyRepository;
 
-    private static final String RESULT = "Вы перевели правильно %d слов(а) из %d";
+    private static final String RESULT = "Вы правильно перевели %d слов(а) из %d";
 
     @Override
     public List<String> getFewWords(int limit) {
