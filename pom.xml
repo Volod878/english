@@ -12,6 +12,7 @@
     <groupId>ru.volod878</groupId>
     <artifactId>english</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>english</name>
     <description>For learning English words</description>
 
