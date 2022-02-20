@@ -6,4 +6,5 @@
                       https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="01-changeset-create-tables.xml" relativeToChangelogFile="true"/>
+    <include file="02-create-learning-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
