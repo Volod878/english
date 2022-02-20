@@ -8,10 +8,7 @@ import ru.volod878.english.domain.repository.VocabularyRepository;
 import ru.volod878.english.web.dto.ExaminationDTO;
 import ru.volod878.english.web.response.ExaminationResponse;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,12 +40,17 @@ public class LearningService implements ILearningService {
                         vocabulary.getWord(),
                         answers.get(vocabulary.getWord()),
                         vocabulary.getTranslates()))
-                .collect(Collectors.partitioningBy(dto ->
-                        Objects.nonNull(dto.getAnswer()) && dto.getTranslate().contains(dto.getAnswer())));
+                .collect(Collectors.partitioningBy(this::containsTranslation));
 
         return new ExaminationResponse(
                 String.format(RESULT, resultMap.get(true).size(), vocabularies.size()),
                 resultMap.get(true),
                 resultMap.get(false));
+    }
+
+    private boolean containsTranslation(ExaminationDTO dto) {
+        return Objects.nonNull(dto.getAnswer()) &&
+                Arrays.asList(dto.getTranslate().split(", "))
+                        .contains(dto.getAnswer());
     }
 }
