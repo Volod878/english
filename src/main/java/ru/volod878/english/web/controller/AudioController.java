@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.exception.FailedAudioStreamingException;
 import ru.volod878.english.service.IVocabularyService;
-import ru.volod878.english.type.Location;
+import ru.volod878.english.domain.enums.Location;
 
 import java.util.List;
 

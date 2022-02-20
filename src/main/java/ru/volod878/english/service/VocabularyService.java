@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.ApplicationProperties;
 import ru.volod878.english.web.dto.VocabularyDto;
-import ru.volod878.english.model.Vocabulary;
-import ru.volod878.english.repository.VocabularyRepository;
-import ru.volod878.english.type.Location;
+import ru.volod878.english.domain.model.Vocabulary;
+import ru.volod878.english.domain.repository.VocabularyRepository;
+import ru.volod878.english.domain.enums.Location;
 
 import java.util.List;
 import java.util.Objects;

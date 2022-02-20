@@ -1,10 +1,10 @@
-package ru.volod878.english.repository;
+package ru.volod878.english.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.volod878.english.model.Vocabulary;
+import ru.volod878.english.domain.model.Vocabulary;
 
 import java.util.List;
 import java.util.Set;

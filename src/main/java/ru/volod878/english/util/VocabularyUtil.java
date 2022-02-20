@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.exception.FailedAudioStreamingException;
-import ru.volod878.english.model.Vocabulary;
+import ru.volod878.english.domain.model.Vocabulary;
 
 import java.io.FileInputStream;
 import java.io.IOException;

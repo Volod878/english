@@ -3,8 +3,8 @@ package ru.volod878.english.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.volod878.english.model.Vocabulary;
-import ru.volod878.english.repository.VocabularyRepository;
+import ru.volod878.english.domain.model.Vocabulary;
+import ru.volod878.english.domain.repository.VocabularyRepository;
 import ru.volod878.english.web.dto.ExaminationDTO;
 import ru.volod878.english.web.response.ExaminationResponse;
 
