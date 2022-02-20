@@ -23,9 +23,14 @@ public class LearningService implements ILearningService {
 
     private static final String RESULT = "Вы правильно перевели %d слов(а) из %d";
 
+    //TODO возвращать список слов исходя из статистики правильных переводов
     @Override
     public List<String> getFewWords(int limit) {
-        List<String> words = vocabularyRepository.findAllWords();
+        List<String> words = vocabularyRepository.findWordsWithWrongAnswer();
+
+//        List<String> rightWords = vocabularyRepository.findWordsWithRightAnswer();
+//        System.out.println(rightWords.stream().anyMatch(words::contains));
+
         Collections.shuffle(words);
         return words.stream().limit(limit).collect(Collectors.toList());
     }
