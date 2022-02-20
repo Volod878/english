@@ -53,9 +53,13 @@ REST API
 > ```
 
 > GET http://localhost:8888/audio/uk/mp3
-> Query example: fileName=resolve
+> 
+> Query example: fileName = resolve
+> 
 > Response example: file resolve.mp3 (английское произношение)
 
 > GET http://localhost:8888/audio/us/mp3
-> Query example: fileName=resolve
+> 
+> Query example: fileName = resolve
+> 
 > Response example: file resolve.mp3 (американское произношение)
