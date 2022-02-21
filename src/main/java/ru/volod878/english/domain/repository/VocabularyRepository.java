@@ -18,15 +18,15 @@ public interface VocabularyRepository extends JpaRepository<Vocabulary, Integer>
 
     @Query(value = "SELECT voc.word" +
             " FROM vocabulary_bank.public.vocabulary voc" +
-            " LEFT JOIN (SELECT wl.vocabulary_id, wl.answer_is_right FROM word_learning wl" +
+            " LEFT JOIN (SELECT wl.vocabulary_id, wl.answer_is_right FROM vocabulary_bank.public.word_learning wl" +
                 " INNER JOIN (SELECT wl.vocabulary_id, MAX(wl.ins_time) ins" +
-                " FROM word_learning wl" +
+                " FROM vocabulary_bank.public.word_learning wl" +
                 " GROUP BY wl.vocabulary_id) by_ins" +
                 " ON wl.vocabulary_id = by_ins.vocabulary_id AND wl.ins_time = by_ins.ins) wl_ins" +
             " ON voc.id = wl_ins.vocabulary_id" +
             " WHERE wl_ins.answer_is_right = false OR wl_ins.vocabulary_id ISNULL",
             nativeQuery = true)
-    List<String> findWordsWithWrongAnswer();
+    List<String> findWordsWithoutRightAnswer();
 
 //    @Query(value = "SELECT voc.word" +
 //            " FROM vocabulary_bank.public.vocabulary voc" +
