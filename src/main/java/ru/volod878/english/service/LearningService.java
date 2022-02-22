@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,7 +25,6 @@ public class LearningService implements ILearningService {
 
     private static final String RESULT = "Вы правильно перевели %d слов(а) из %d";
 
-    //TODO возвращать список слов исходя из статистики правильных переводов
     @Override
     public List<String> getFewWords(int limit) {
         List<String> words = vocabularyRepository.findWordsWithoutRightAnswer();
@@ -40,7 +41,8 @@ public class LearningService implements ILearningService {
         answers.forEach((key, value) -> {
             if (value.trim().isEmpty()) {
                 answers.put(key, null);
-            }});
+            }
+        });
 
         List<Vocabulary> vocabularies = vocabularyRepository.findByWordIn(answers.keySet());
 
@@ -61,8 +63,8 @@ public class LearningService implements ILearningService {
 
     private boolean containsTranslation(ExaminationDTO dto) {
         return Objects.nonNull(dto.getAnswer()) &&
-                Arrays.asList(dto.getTranslate().split(", "))
-                        .contains(dto.getAnswer());
+                Arrays.stream(dto.getTranslate().split(", "))
+                        .anyMatch(translate -> asList(dto.getAnswer().split(", ")).contains(translate));
     }
 
     private void addStatistic(List<Vocabulary> vocabularies, Map<Boolean, List<ExaminationDTO>> resultMap) {
