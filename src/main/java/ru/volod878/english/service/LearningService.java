@@ -80,4 +80,9 @@ public class LearningService implements ILearningService {
                         .build()
         ));
     }
+
+    @Override
+    public List<WordLearning> info() {
+        return wordLearningRepository.findAll();
+    }
 }
