@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static ru.volod878.english.web.response.enums.WordSourceInfo.IN;
+import static ru.volod878.english.web.response.enums.WordSourceInfo.OUT;
 import static ru.volod878.english.util.VocabularyUtil.*;
 
 @Slf4j
@@ -27,7 +29,7 @@ public class VocabularyService implements IVocabularyService {
     @Override
     public VocabularyDto getOrCreateByWord(String word) {
         Vocabulary vocabulary = repository.findByWord(word.toLowerCase());
-        return vocabulary == null ? create(parserService.parse(word.toLowerCase())) : asTo(vocabulary);
+        return Objects.nonNull(vocabulary) ? asTo(vocabulary, IN) : create(parserService.parse(word.toLowerCase()));
     }
 
     @Override
@@ -37,7 +39,7 @@ public class VocabularyService implements IVocabularyService {
 
     @Override
     public VocabularyDto create(VocabularyDto vocabularyDto) {
-        return asTo(repository.save(createNewFromTo(properties.getSoundUrl(), vocabularyDto)));
+        return asTo(repository.save(createNewFromTo(properties.getSoundUrl(), vocabularyDto)), OUT);
     }
 
     @Override
@@ -59,7 +61,9 @@ public class VocabularyService implements IVocabularyService {
                 return getOrCreateByWord(word);
             } catch (Exception e) {
                 log.error("Не удалось найти слово \"{}\"", word, e);
-                return new VocabularyDto(word, null, null, null);
+                return VocabularyDto.builder()
+                        .word(word)
+                        .build();
             }
         }).collect(Collectors.toList());
     }

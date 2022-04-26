@@ -3,6 +3,7 @@ package ru.volod878.english.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import ru.volod878.english.web.response.enums.WordSourceInfo;
 import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.exception.FailedAudioStreamingException;
 import ru.volod878.english.domain.model.Vocabulary;
@@ -26,12 +27,13 @@ public class VocabularyUtil {
                 dto.getTranslates());
     }
 
-    public static VocabularyDto asTo(Vocabulary vocabulary) {
+    public static VocabularyDto asTo(Vocabulary vocabulary, WordSourceInfo wordSourceInfo) {
         return new VocabularyDto(
                 vocabulary.getWord(),
                 vocabulary.getTranscriptionUs(),
                 vocabulary.getTranscriptionUk(),
-                vocabulary.getTranslates());
+                vocabulary.getTranslates(),
+                wordSourceInfo);
     }
 
     public static StreamingResponseBody getStreamingMp3(String wordPath) {
