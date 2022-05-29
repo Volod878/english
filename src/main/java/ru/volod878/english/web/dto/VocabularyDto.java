@@ -16,4 +16,11 @@ public class VocabularyDto {
     private String transcriptionUk;
     private String translates;
     private WordSourceInfo wordSourceInfo;
+
+    @Override
+    public String toString() {
+        return "US - " + transcriptionUs + '\n' +
+                "UK - " + transcriptionUk + '\n' +
+                translates;
+    }
 }
