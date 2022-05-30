@@ -5,18 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.ApplicationProperties;
-import ru.volod878.english.web.dto.VocabularyDto;
+import ru.volod878.english.domain.enums.Location;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.repository.VocabularyRepository;
-import ru.volod878.english.domain.enums.Location;
+import ru.volod878.english.util.VocabularyUtil;
+import ru.volod878.english.web.dto.VocabularyDto;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static ru.volod878.english.util.VocabularyUtil.*;
 import static ru.volod878.english.web.response.enums.WordSourceInfo.IN;
 import static ru.volod878.english.web.response.enums.WordSourceInfo.OUT;
-import static ru.volod878.english.util.VocabularyUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -81,5 +83,17 @@ public class VocabularyService implements IVocabularyService {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public File getMp3File(Location location, String word) {
+        Vocabulary vocabulary = repository.findByWord(word);
+        if (Objects.isNull(vocabulary)) {
+            throw new NullPointerException("Слово не найдено");
+        }
+        return VocabularyUtil.getMp3File(
+                location.equals(Location.UK) ?
+                        vocabulary.getSoundUkPath() : vocabulary.getSoundUsPath()
+        );
     }
 }
