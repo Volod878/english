@@ -8,7 +8,7 @@ import ru.volod878.english.service.ISendBotMessage;
 public class UnknownCommand implements Command {
     private final ISendBotMessage sendBotMessage;
     public static final String UNKNOWN_MESSAGE = "Упс...\n" +
-            "Кажется перевести это";
+            "Кажется я не могу перевести это";
 
     @Override
     public void execute(Update update) {

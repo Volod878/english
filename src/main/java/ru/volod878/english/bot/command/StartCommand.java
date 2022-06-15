@@ -12,7 +12,7 @@ import static ru.volod878.english.bot.command.CommandName.START;
 public class StartCommand implements Command {
     private final ISendBotMessage sendBotMessage;
     public final static String START_MESSAGE = "Привет!\n" +
-            "Я помогу тебе учить английские слова.\n" +
+            "Я помогу тебе выучить английские слова.\n" +
             "Напиши мне любое английское слово и я постараюсь его перевести.";
 
     @Override
