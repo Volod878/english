@@ -8,10 +8,7 @@ import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.exception.FailedAudioStreamingException;
 import ru.volod878.english.domain.model.Vocabulary;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class VocabularyUtil {
     private static final Logger log = LoggerFactory.getLogger(VocabularyUtil.class);
@@ -53,5 +50,9 @@ public class VocabularyUtil {
             os.write(data, 0, read);
         }
         os.flush();
+    }
+
+    public static File getMp3File(String wordPath) {
+        return new File(wordPath);
     }
 }
