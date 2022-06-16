@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.volod878.english.bot.EnglishBot;
+import ru.volod878.english.bot.command.Command;
 
 import java.io.File;
 
@@ -44,5 +45,10 @@ public class SendBotMessage implements ISendBotMessage {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setActiveCommand(Command command) {
+        bot.setActiveCommand(command);
     }
 }

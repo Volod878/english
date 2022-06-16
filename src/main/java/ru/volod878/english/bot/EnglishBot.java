@@ -1,15 +1,19 @@
 package ru.volod878.english.bot;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.volod878.english.bot.command.*;
+import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.service.ISendBotMessage;
 import ru.volod878.english.service.IVocabularyService;
 import ru.volod878.english.service.SendBotMessage;
 
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.volod878.english.bot.command.CommandName.*;
@@ -23,11 +27,15 @@ public class EnglishBot extends TelegramLongPollingBot {
 
     private final CommandContainer commandContainer;
 
+    @Getter
+    @Setter
+    private Command activeCommand;
+
     @Autowired
-    public EnglishBot(IVocabularyService vocabularyService) {
+    public EnglishBot(IVocabularyService vocabularyService, ILearningService learningService) {
         ISendBotMessage sendBotMessage = new SendBotMessage(this);
         ConcurrentHashMap<String, Command> commandMap = new ConcurrentHashMap<>();
-        commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage));
+        commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService));
         commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage));
         commandMap.put(WORD_INFO.getCommandName(), new WordInfoCommand(sendBotMessage));
         this.commandContainer = new CommandContainer(sendBotMessage, commandMap, vocabularyService);
@@ -36,8 +44,12 @@ public class EnglishBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (isMessageWithText(update)) {
-            String message = update.getMessage().getText().trim();
-            commandContainer.retrieveCommand(message).execute(update);
+            if (Objects.nonNull(activeCommand)) {
+                activeCommand.execute(update);
+            } else {
+                String message = update.getMessage().getText().trim();
+                commandContainer.retrieveCommand(message).execute(update);
+            }
         }
     }
 
