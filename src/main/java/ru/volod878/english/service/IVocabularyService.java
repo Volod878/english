@@ -5,6 +5,7 @@ import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.enums.Location;
 
+import java.io.File;
 import java.util.List;
 
 public interface IVocabularyService {
@@ -20,4 +21,6 @@ public interface IVocabularyService {
     List<VocabularyDto> getAll(List<String> words);
 
     List<String> getMp3Error(Location location, List<String> words);
+
+    File getMp3File(Location location, String word);
 }
