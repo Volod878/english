@@ -1,4 +1,4 @@
-package ru.volod878.english.service;
+package ru.volod878.english.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.model.WordLearning;
 import ru.volod878.english.domain.repository.VocabularyRepository;
 import ru.volod878.english.domain.repository.WordLearningRepository;
+import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.web.dto.ExaminationDTO;
 import ru.volod878.english.web.response.ExaminationResponse;
 

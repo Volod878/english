@@ -11,7 +11,7 @@ import ru.volod878.english.bot.command.*;
 import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.service.ISendBotMessage;
 import ru.volod878.english.service.IVocabularyService;
-import ru.volod878.english.service.SendBotMessage;
+import ru.volod878.english.service.impl.SendBotMessage;
 
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;

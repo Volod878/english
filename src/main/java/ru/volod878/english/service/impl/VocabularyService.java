@@ -1,4 +1,4 @@
-package ru.volod878.english.service;
+package ru.volod878.english.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,8 @@ import ru.volod878.english.ApplicationProperties;
 import ru.volod878.english.domain.enums.Location;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.repository.VocabularyRepository;
+import ru.volod878.english.service.IParserService;
+import ru.volod878.english.service.IVocabularyService;
 import ru.volod878.english.util.VocabularyUtil;
 import ru.volod878.english.web.dto.VocabularyDto;
 
@@ -25,7 +27,7 @@ import static ru.volod878.english.web.response.enums.WordSourceInfo.OUT;
 @Service
 public class VocabularyService implements IVocabularyService {
     private final VocabularyRepository repository;
-    private final ParserService parserService;
+    private final IParserService parserService;
     private final ApplicationProperties properties;
 
     @Override

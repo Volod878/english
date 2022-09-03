@@ -1,4 +1,4 @@
-package ru.volod878.english.service;
+package ru.volod878.english.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.volod878.english.bot.EnglishBot;
 import ru.volod878.english.bot.command.Command;
+import ru.volod878.english.service.ISendBotMessage;
 
 import java.io.File;
 
