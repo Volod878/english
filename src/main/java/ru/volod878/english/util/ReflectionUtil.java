@@ -24,8 +24,8 @@ public class ReflectionUtil {
         }
     }
 
-    public static <Model> String[] getColumnNames(Class<Model> clazz) {
-        return Arrays.stream(clazz.getDeclaredFields())
+    public static <Model> String[] getColumnNames(Class<Model> modelClass) {
+        return Arrays.stream(modelClass.getDeclaredFields())
                 .map(Field::getName)
                 .toArray(String[]::new);
     }
