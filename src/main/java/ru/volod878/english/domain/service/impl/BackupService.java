@@ -14,9 +14,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Сервис предоставляет возможность сохранение актуального состояние и восстановления данных.
@@ -83,7 +83,7 @@ public class BackupService implements IBackupService {
                 &&
                 backupDb.createNewFile()) {
             try (CSVWriter writer = new CSVWriter(new FileWriter(backupDb), ';')) {
-                String[] columnNames = getColumnName();
+                String[] columnNames = getColumnNames();
                 writer.writeNext(columnNames);
                 vocabularyRepository.findAll().forEach(vocabulary -> {
                     String[] vocabularyRow = new String[columnNames.length];
@@ -98,42 +98,25 @@ public class BackupService implements IBackupService {
     }
 
     private String getValueField(String columnName, Vocabulary vocabulary) {
-        String value;
-        switch (columnName) {
-            case ("id"):
-                value = String.valueOf(vocabulary.getId());
-                break;
-            case ("word"):
-                value = vocabulary.getWord();
-                break;
-            case ("transcriptionUs"):
-                value = vocabulary.getTranscriptionUs();
-                break;
-            case ("transcriptionUk"):
-                value = vocabulary.getTranscriptionUk();
-                break;
-            case ("soundUsPath"):
-                value = vocabulary.getSoundUsPath();
-                break;
-            case ("soundUkPath"):
-                value = vocabulary.getSoundUkPath();
-                break;
-            case ("translates"):
-                value = vocabulary.getTranslates();
-                break;
-            default:
-                //TODO другое исключение
-                throw new RuntimeException();
+        try {
+            String methodName = "get" + columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
+            Method getFieldValue = Vocabulary.class.getMethod(methodName);
+            Object value = getFieldValue.invoke(vocabulary);
+            if (value instanceof Integer) {
+                return String.valueOf(value);
+            } else {
+                return (String) value;
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            //TODO другое исключение
+            throw new RuntimeException(e);
         }
-        return value;
     }
 
-    private String[] getColumnName() {
-        List<String> fieldNames = Arrays.stream(Vocabulary.class.getDeclaredFields())
+    private String[] getColumnNames() {
+        return Arrays.stream(Vocabulary.class.getDeclaredFields())
                 .map(Field::getName)
-                .collect(Collectors.toList());
-        String[] fieldArray = new String[fieldNames.size()];
-        return fieldNames.toArray(fieldArray);
+                .toArray(String[]::new);
     }
 
     private void createBackupSound(File backupSoundDir) {
