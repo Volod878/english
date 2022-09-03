@@ -8,11 +8,11 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class ReflectionUtil {
-    public static <T> String getValueField(String columnName, T t) {
+    public static <Model> String getFieldValue(String columnName, Model model) {
         try {
             String methodName = "get" + columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
             Method getFieldValue = Vocabulary.class.getMethod(methodName);
-            Object value = getFieldValue.invoke(t);
+            Object value = getFieldValue.invoke(model);
             if (value instanceof Integer) {
                 return String.valueOf(value);
             } else {
@@ -24,7 +24,7 @@ public class ReflectionUtil {
         }
     }
 
-    public static <T> String[] getColumnNames(Class<T> clazz) {
+    public static <Model> String[] getColumnNames(Class<Model> clazz) {
         return Arrays.stream(clazz.getDeclaredFields())
                 .map(Field::getName)
                 .toArray(String[]::new);

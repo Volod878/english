@@ -15,7 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static ru.volod878.english.util.ReflectionUtil.getColumnNames;
-import static ru.volod878.english.util.ReflectionUtil.getValueField;
+import static ru.volod878.english.util.ReflectionUtil.getFieldValue;
 
 /**
  * Сервис предоставляет возможность сохранение актуального состояние и восстановления данных.
@@ -87,7 +87,7 @@ public class BackupService implements IBackupService {
                 vocabularyRepository.findAll().forEach(vocabulary -> {
                     String[] vocabularyRow = new String[columnNames.length];
                     for (int i = 0; i < columnNames.length; i++) {
-                        vocabularyRow[i] = getValueField(columnNames[i], vocabulary);
+                        vocabularyRow[i] = getFieldValue(columnNames[i], vocabulary);
                     }
                     writer.writeNext(vocabularyRow);
                 });
