@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static ru.volod878.english.util.ReflectionUtil.getColumnNames;
+import static ru.volod878.english.util.ReflectionUtil.getFieldNames;
 import static ru.volod878.english.util.ReflectionUtil.getFieldValue;
 
 /**
@@ -82,12 +82,15 @@ public class BackupService implements IBackupService {
                 &&
                 backupDb.createNewFile()) {
             try (CSVWriter writer = new CSVWriter(new FileWriter(backupDb), ';')) {
-                String[] columnNames = getColumnNames(Vocabulary.class);
+                String[] columnNames = getFieldNames(Vocabulary.class);
                 writer.writeNext(columnNames);
                 vocabularyRepository.findAll().forEach(vocabulary -> {
                     String[] vocabularyRow = new String[columnNames.length];
                     for (int i = 0; i < columnNames.length; i++) {
                         vocabularyRow[i] = getFieldValue(columnNames[i], vocabulary);
+                        if (vocabularyRow[i].contains(";")) {
+                            log.error("В записи присутствует знак ';'. {}", vocabulary);
+                        }
                     }
                     writer.writeNext(vocabularyRow);
                 });
