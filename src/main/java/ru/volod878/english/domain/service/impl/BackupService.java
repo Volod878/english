@@ -1,6 +1,5 @@
 package ru.volod878.english.domain.service.impl;
 
-import liquibase.util.csv.CSVWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,11 +10,11 @@ import ru.volod878.english.domain.service.IBackupService;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
-import static ru.volod878.english.util.ReflectionUtil.getFieldNames;
-import static ru.volod878.english.util.ReflectionUtil.getFieldValue;
+import static ru.volod878.english.util.CsvUtil.fromCsv;
+import static ru.volod878.english.util.CsvUtil.toCsv;
 
 /**
  * Сервис предоставляет возможность сохранение актуального состояние и восстановления данных.
@@ -43,10 +42,16 @@ public class BackupService implements IBackupService {
         }
     }
 
+    /**
+     * Актуализация базы данных.
+     * Если backup уже создан, проверяем актуальность данных путем сравнения и обновления записей в БД и backup.
+     * Иначе создаем backup БД.
+     */
     private void actualizationDb() throws IOException {
         File backupDb = new File(applicationProperties.getBackupDbPath());
         if (backupDb.exists()) {
-
+            List<Vocabulary> vocabulariesDb = vocabularyRepository.findAll();
+            List<Vocabulary> vocabulariesBackup = fromCsv(backupDb, Vocabulary.class, ';');
         } else {
             createBackupDataBase();
         }
@@ -81,21 +86,8 @@ public class BackupService implements IBackupService {
         if ((backupDb.getParentFile().exists() || backupDb.getParentFile().createNewFile())
                 &&
                 backupDb.createNewFile()) {
-            try (CSVWriter writer = new CSVWriter(new FileWriter(backupDb), ';')) {
-                String[] columnNames = getFieldNames(Vocabulary.class);
-                writer.writeNext(columnNames);
-                vocabularyRepository.findAll().forEach(vocabulary -> {
-                    String[] vocabularyRow = new String[columnNames.length];
-                    for (int i = 0; i < columnNames.length; i++) {
-                        vocabularyRow[i] = getFieldValue(columnNames[i], vocabulary);
-                        if (vocabularyRow[i].contains(";")) {
-                            log.error("В записи присутствует знак ';'. {}", vocabulary);
-                        }
-                    }
-                    writer.writeNext(vocabularyRow);
-                });
-            } catch (Exception ignored) {
-            }
+            List<Vocabulary> vocabularies = vocabularyRepository.findAll();
+            toCsv(backupDb, vocabularies, ';');
         }
     }
 
