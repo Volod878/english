@@ -3,12 +3,14 @@ package ru.volod878.english.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import ru.volod878.english.web.response.enums.WordSourceInfo;
-import ru.volod878.english.web.dto.VocabularyDto;
-import ru.volod878.english.exception.FailedAudioStreamingException;
 import ru.volod878.english.domain.model.Vocabulary;
+import ru.volod878.english.exception.FailedAudioStreamingException;
+import ru.volod878.english.web.dto.VocabularyDto;
+import ru.volod878.english.web.response.enums.WordSourceInfo;
 
 import java.io.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VocabularyUtil {
     private static final Logger log = LoggerFactory.getLogger(VocabularyUtil.class);
@@ -54,5 +56,13 @@ public class VocabularyUtil {
 
     public static File getMp3File(String wordPath) {
         return new File(wordPath);
+    }
+
+    public static List<Vocabulary> onlyInFirstByWord(List<Vocabulary> vocabulariesFirst,
+                                                     List<Vocabulary> vocabulariesSecond) {
+        return vocabulariesFirst.stream()
+                .filter(vocabularyFirst -> vocabulariesSecond.stream()
+                        .noneMatch(vocabularySecond -> vocabularySecond.getWord().equals(vocabularyFirst.getWord())))
+                .collect(Collectors.toList());
     }
 }
