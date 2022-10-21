@@ -9,6 +9,8 @@ import ru.volod878.english.web.dto.VocabularyDto;
 import ru.volod878.english.web.response.enums.WordSourceInfo;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,15 +39,15 @@ public class VocabularyUtil {
 
     public static StreamingResponseBody getStreamingMp3(String wordPath) {
         try {
-            InputStream audioFileStream = new FileInputStream(wordPath);
-            return (os) -> readAndWrite(audioFileStream, os);
+            InputStream audioFileStream = Files.newInputStream(Paths.get(wordPath));
+            return (os) -> readAndWriteStream(audioFileStream, os);
         } catch (IOException e) {
             log.error("Неудачная попытка получить аудио файл. wordPath = {}", wordPath, e);
             throw new FailedAudioStreamingException("Неудачная попытка получить аудио файл");
         }
     }
 
-    private static void readAndWrite(final InputStream is, OutputStream os) throws IOException {
+    private static void readAndWriteStream(final InputStream is, OutputStream os) throws IOException {
         byte[] data = new byte[2048];
         int read;
         while ((read = is.read(data)) > 0) {
