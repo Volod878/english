@@ -1,7 +1,6 @@
 package ru.volod878.english.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.exception.FailedAudioStreamingException;
@@ -14,17 +13,17 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class VocabularyUtil {
-    private static final Logger log = LoggerFactory.getLogger(VocabularyUtil.class);
 
-    public static Vocabulary createNewFromTo(String soundUrl, VocabularyDto dto) {
+    public static Vocabulary createNewFromTo(String soundUrl, String soundDir, VocabularyDto dto) {
         return new Vocabulary(
                 null,
                 dto.getWord(),
                 dto.getTranscriptionUs(),
                 dto.getTranscriptionUk(),
-                Mp3Parser.parseUs(soundUrl, dto.getWord()),
-                Mp3Parser.parseUk(soundUrl, dto.getWord()),
+                Mp3Parser.parseUs(soundUrl, soundDir, dto.getWord()),
+                Mp3Parser.parseUk(soundUrl, soundDir, dto.getWord()),
                 dto.getTranslates());
     }
 

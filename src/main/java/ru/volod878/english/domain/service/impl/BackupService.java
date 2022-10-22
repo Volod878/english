@@ -38,8 +38,7 @@ public class BackupService implements IBackupService {
     private void backup() throws IOException {
         File backupDirectory = new File(applicationProperties.getBackupPath());
         if (backupDirectory.exists()) {
-            actualizationDb();
-            actualizationSound();
+            actualization();
         } else {
             createBackupDate(backupDirectory);
         }
@@ -67,62 +66,67 @@ public class BackupService implements IBackupService {
      * но в БД есть запись с id равным id записи из backup, Это запись из backup сохраняется в БД под новым id
      * и файл backup перезаписывается полностью.
      */
-    void actualizationDb() throws IOException {
-        File backupDb = new File(applicationProperties.getBackupDbPath());
-        if (backupDb.exists()) {
-            List<Vocabulary> vocabulariesDb = vocabularyRepository.findAll();
-            List<Vocabulary> vocabulariesBackup = fromCsv(backupDb, Vocabulary.class, ';');
-            List<Vocabulary> vocabulariesOnlyInDb = onlyInFirstByWord(vocabulariesDb, vocabulariesBackup);
-            if (!vocabulariesOnlyInDb.isEmpty()) {
-                log.info("Backup vocabulary. {}",
-                        vocabulariesOnlyInDb.stream().map(Vocabulary::getWord).collect(Collectors.toList()));
+    @Override
+    public void actualization() {
+        try {
+            File backupDb = new File(applicationProperties.getBackupDbPath());
+            if (backupDb.exists()) {
+                List<Vocabulary> vocabulariesDb = vocabularyRepository.findAll();
+                List<Vocabulary> vocabulariesBackup = fromCsv(backupDb, Vocabulary.class, ';');
+                List<Vocabulary> vocabulariesOnlyInDb = onlyInFirstByWord(vocabulariesDb, vocabulariesBackup);
+                if (!vocabulariesOnlyInDb.isEmpty()) {
+                    log.info("Backup vocabulary. {}",
+                            vocabulariesOnlyInDb.stream().map(Vocabulary::getWord).collect(Collectors.toList()));
 
-                List<Vocabulary> vocabulariesConflict = vocabulariesBackup.stream()
-                        .filter(vocabulariesOnlyInDb::contains)
-                        .collect(Collectors.toList());
-                if (vocabulariesConflict.isEmpty()) {
-                    updateCsv(backupDb, vocabulariesOnlyInDb, ';');
-                } else {
-                    vocabulariesConflict.forEach(vocabulary ->
-                            log.info("В БД найдена запись с id = {} у которой word отличается от записи backup с тем же id. " +
-                                            "Backup word = {}, БД word = {}",
-                                    vocabulary.getId(),
-                                    vocabulary.getWord(),
-                                    vocabulariesOnlyInDb.stream()
-                                            .filter(v -> v.getId().equals(vocabulary.getId()))
-                                            .findFirst()
-                                            .map(Vocabulary::getWord)
-                                            .orElse(null)));
-                    createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                    List<Vocabulary> vocabulariesConflict = vocabulariesBackup.stream()
+                            .filter(vocabulariesOnlyInDb::contains)
+                            .collect(Collectors.toList());
+                    if (vocabulariesConflict.isEmpty()) {
+                        updateCsv(backupDb, vocabulariesOnlyInDb, ';');
+                    } else {
+                        vocabulariesConflict.forEach(vocabulary ->
+                                log.info("В БД найдена запись с id = {} у которой word отличается от записи backup с тем же id. " +
+                                                "Backup word = {}, БД word = {}",
+                                        vocabulary.getId(),
+                                        vocabulary.getWord(),
+                                        vocabulariesOnlyInDb.stream()
+                                                .filter(v -> v.getId().equals(vocabulary.getId()))
+                                                .findFirst()
+                                                .map(Vocabulary::getWord)
+                                                .orElse(null)));
+                        createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                    }
                 }
-            }
 
-            List<Vocabulary> vocabulariesOnlyInBackup = onlyInFirstByWord(vocabulariesBackup, vocabulariesDb);
-            if (!vocabulariesOnlyInBackup.isEmpty()) {
-                log.info("Update vocabulary from backup. {}",
-                        vocabulariesOnlyInBackup.stream().map(Vocabulary::getWord).collect(Collectors.toList()));
+                List<Vocabulary> vocabulariesOnlyInBackup = onlyInFirstByWord(vocabulariesBackup, vocabulariesDb);
+                if (!vocabulariesOnlyInBackup.isEmpty()) {
+                    log.info("Update vocabulary from backup. {}",
+                            vocabulariesOnlyInBackup.stream().map(Vocabulary::getWord).collect(Collectors.toList()));
 
-                Map<Boolean, List<Vocabulary>> vocabularyConflictAndOnlyBackup = vocabulariesOnlyInBackup.stream()
-                        .collect(Collectors.partitioningBy(vocabulariesDb::contains));
-                final boolean conflict = true;
-                vocabularyConflictAndOnlyBackup.get(conflict)
-                        .forEach(vocabulary -> {
-                            log.info("В backup найдена запись с id = {} но word отличается от БД с тем же id. " +
-                                            "Backup word = {}, БД word = {}",
-                                    vocabulary.getId(),
-                                    vocabulary.getWord(),
-                                    vocabulariesDb.stream()
-                                            .filter(v -> v.getWord().equals(vocabulary.getWord()))
-                                            .findFirst().orElse(null));
-                            vocabulary.setId(null);
-                        });
-                vocabularyRepository.saveAll(vocabulariesOnlyInBackup);
-                if (!vocabularyConflictAndOnlyBackup.get(conflict).isEmpty()) {
-                    createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                    Map<Boolean, List<Vocabulary>> vocabularyConflictAndOnlyBackup = vocabulariesOnlyInBackup.stream()
+                            .collect(Collectors.partitioningBy(vocabulariesDb::contains));
+                    final boolean conflict = true;
+                    vocabularyConflictAndOnlyBackup.get(conflict)
+                            .forEach(vocabulary -> {
+                                log.info("В backup найдена запись с id = {} но word отличается от БД с тем же id. " +
+                                                "Backup word = {}, БД word = {}",
+                                        vocabulary.getId(),
+                                        vocabulary.getWord(),
+                                        vocabulariesDb.stream()
+                                                .filter(v -> v.getWord().equals(vocabulary.getWord()))
+                                                .findFirst().orElse(null));
+                                vocabulary.setId(null);
+                            });
+                    vocabularyRepository.saveAll(vocabulariesOnlyInBackup);
+                    if (!vocabularyConflictAndOnlyBackup.get(conflict).isEmpty()) {
+                        createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                    }
                 }
+            } else {
+                createBackupDataBase();
             }
-        } else {
-            createBackupDataBase();
+        } catch (IOException ex) {
+            log.error("Ошибка чтения или записи файла", ex);
         }
     }
 
@@ -130,8 +134,6 @@ public class BackupService implements IBackupService {
         log.info("Выполняется backup всех данных");
         if (backupDirectory.createNewFile()) {
             createBackupDataBase();
-            applicationProperties.getBackupSoundPaths()
-                    .forEach(soundPath -> createBackupSound(new File(soundPath)));
         } else {
             log.error("Не удалось создать директорию {}", backupDirectory.getPath());
         }
@@ -147,21 +149,5 @@ public class BackupService implements IBackupService {
             List<Vocabulary> vocabularies = vocabularyRepository.findAll();
             createCsv(backupDb, vocabularies, ';');
         }
-    }
-
-    private void actualizationSound() {
-        applicationProperties.getBackupSoundPaths().forEach(soundPath -> {
-            File backupSoundDir = new File(soundPath);
-            if (backupSoundDir.exists()) {
-
-            } else {
-                createBackupSound(backupSoundDir);
-            }
-        });
-    }
-
-    private void createBackupSound(File backupSoundDir) {
-        log.info("Выполняется backup звуковых файлов");
-        //TODO создать директорию
     }
 }

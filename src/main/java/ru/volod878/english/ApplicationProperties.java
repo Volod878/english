@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Data
 @Component
 public class ApplicationProperties {
@@ -17,6 +15,6 @@ public class ApplicationProperties {
     private String backupPath;
     @Value("${backup-db-path}")
     private String backupDbPath;
-    @Value("${backup-sound-paths}")
-    private List<String> backupSoundPaths;
+    @Value("${sound-dir}")
+    private String soundDir;
 }

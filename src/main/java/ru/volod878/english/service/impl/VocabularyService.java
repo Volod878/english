@@ -8,6 +8,7 @@ import ru.volod878.english.ApplicationProperties;
 import ru.volod878.english.domain.enums.Location;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.repository.VocabularyRepository;
+import ru.volod878.english.domain.service.impl.BackupService;
 import ru.volod878.english.service.IParserService;
 import ru.volod878.english.service.IVocabularyService;
 import ru.volod878.english.util.VocabularyUtil;
@@ -16,6 +17,7 @@ import ru.volod878.english.web.dto.VocabularyDto;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static ru.volod878.english.util.VocabularyUtil.*;
@@ -28,6 +30,7 @@ import static ru.volod878.english.web.response.enums.WordSourceInfo.OUT;
 public class VocabularyService implements IVocabularyService {
     private final VocabularyRepository repository;
     private final IParserService parserService;
+    private final BackupService backupService;
     private final ApplicationProperties properties;
 
     @Override
@@ -43,7 +46,10 @@ public class VocabularyService implements IVocabularyService {
 
     @Override
     public VocabularyDto create(VocabularyDto vocabularyDto) {
-        return asTo(repository.save(createNewFromTo(properties.getSoundUrl(), vocabularyDto)), OUT);
+        Vocabulary vocabulary = repository.save(
+                createNewFromTo(properties.getSoundUrl(), properties.getSoundDir(), vocabularyDto));
+        CompletableFuture.runAsync(backupService::actualization);
+        return asTo(vocabulary, OUT);
     }
 
     @Override
