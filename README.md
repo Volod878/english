@@ -1,5 +1,7 @@
 ## Приложения для изучения английских слов
 
+### Telegram bot [English Learn](https://t.me/EngVocabularyTrainBot)
+
 ### REST API
 
 > GET http://localhost:8888/vocabulary
