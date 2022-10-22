@@ -1,7 +1,6 @@
 package ru.volod878.english.domain.model;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,4 +27,8 @@ public class WordLearning {
 
     @Column(name = "ins_time")
     private LocalDateTime insTime;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

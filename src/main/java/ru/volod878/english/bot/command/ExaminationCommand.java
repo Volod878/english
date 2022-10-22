@@ -3,14 +3,13 @@ package ru.volod878.english.bot.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.volod878.english.domain.model.User;
+import ru.volod878.english.domain.repository.UserRepository;
 import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.service.ISendBotMessage;
 import ru.volod878.english.web.response.ExaminationResponse;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static ru.volod878.english.bot.command.CommandName.EXAMINATION;
@@ -20,6 +19,7 @@ import static ru.volod878.english.bot.command.CommandName.EXAMINATION;
 public class ExaminationCommand implements Command {
     private final ISendBotMessage sendBotMessage;
     private final ILearningService learningService;
+    private final UserRepository userRepository;
     public static final String EXAMINATION_MESSAGE =
             "Вам будет предоставлено %s слов которые нужно перевести.\n" +
                     "После каждого слова отправьте в ответ перевод.\n" +
@@ -45,7 +45,8 @@ public class ExaminationCommand implements Command {
             sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), word);
         } else {
             log.info("the {} command is executed. step = {}, answers = {}", EXAMINATION, step, answers);
-            ExaminationResponse examination = learningService.examination(answers);
+            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
+            ExaminationResponse examination = learningService.examination(answers, user);
             step = 0;
             fewWords = emptyList();
             answers = new HashMap<>();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="4" author="vlukashov">
+        <addColumn tableName="word_learning">
+            <column name="user_id" type="bigint" remarks="Референс на запись в таблице users">
+                <constraints foreignKeyName="word_learning_user_id"
+                             references="users(id)"
+                             deleteCascade="true"/>
+            </column>
+        </addColumn>
+        <addUniqueConstraint tableName="word_learning"
+                             columnNames="user_id,vocabulary_id"
+                             constraintName="unique_user_id_vocabulary_id"/>
+    </changeSet>
+</databaseChangeLog>

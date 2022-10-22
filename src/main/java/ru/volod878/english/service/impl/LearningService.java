@@ -3,6 +3,7 @@ package ru.volod878.english.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.volod878.english.domain.model.User;
 import ru.volod878.english.domain.model.Vocabulary;
 import ru.volod878.english.domain.model.WordLearning;
 import ru.volod878.english.domain.repository.VocabularyRepository;
@@ -39,6 +40,11 @@ public class LearningService implements ILearningService {
 
     @Override
     public ExaminationResponse examination(Map<String, String> answers) {
+        return examination(answers, null);
+    }
+
+    @Override
+    public ExaminationResponse examination(Map<String, String> answers, User user) {
         answers.forEach((key, value) -> {
             if (value.trim().isEmpty()) {
                 answers.put(key, null);
@@ -54,7 +60,7 @@ public class LearningService implements ILearningService {
                         vocabulary.getTranslates()))
                 .collect(Collectors.partitioningBy(this::containsTranslation));
 
-        addStatistic(vocabularies, resultMap);
+        addStatistic(vocabularies, resultMap, user);
 
         return new ExaminationResponse(
                 String.format(RESULT, resultMap.get(true).size(), vocabularies.size()),
@@ -68,7 +74,7 @@ public class LearningService implements ILearningService {
                         .anyMatch(translate -> asList(dto.getAnswer().split(", ")).contains(translate));
     }
 
-    private void addStatistic(List<Vocabulary> vocabularies, Map<Boolean, List<ExaminationDTO>> resultMap) {
+    private void addStatistic(List<Vocabulary> vocabularies, Map<Boolean, List<ExaminationDTO>> resultMap, User user) {
         List<String> right = resultMap.get(true).stream()
                 .map(ExaminationDTO::getWord)
                 .collect(Collectors.toList());
@@ -78,6 +84,7 @@ public class LearningService implements ILearningService {
                         .vocabulary(vocabulary)
                         .answerIsRight(right.contains(vocabulary.getWord()))
                         .insTime(LocalDateTime.now())
+                        .user(user)
                         .build()
         ));
     }
