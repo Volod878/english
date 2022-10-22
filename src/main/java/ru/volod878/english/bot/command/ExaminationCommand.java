@@ -33,25 +33,30 @@ public class ExaminationCommand implements Command {
     public void execute(Update update) {
         log.info("the {} command is execute. step = {}", EXAMINATION, step);
         if (step == 0) {
-            sendBotMessage.setActiveCommand(this);
-            sendBotMessage.sendMessage(update.getMessage().getChatId().toString(),
-                    String.format(EXAMINATION_MESSAGE, DEFAULT_LIMIT));
-            fewWords = learningService.getFewWords(DEFAULT_LIMIT);
+            startExam(update.getMessage().getChatId().toString());
         } else {
             answers.put(fewWords.get(step - 1), update.getMessage().getText().toLowerCase(Locale.ROOT).trim());
+            if (step < fewWords.size()) {
+                String word = fewWords.get(step++);
+                sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), word);
+            } else {
+                log.info("the {} command is executed. step = {}, answers = {}", EXAMINATION, step, answers);
+                User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
+                ExaminationResponse examination = learningService.examination(answers, user);
+                step = 0;
+                fewWords = emptyList();
+                answers = new HashMap<>();
+                sendBotMessage.setActiveCommand(null);
+                sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), examination.toString());
+            }
         }
-        if (step < fewWords.size()) {
-            String word = fewWords.get(step++);
-            sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), word);
-        } else {
-            log.info("the {} command is executed. step = {}, answers = {}", EXAMINATION, step, answers);
-            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
-            ExaminationResponse examination = learningService.examination(answers, user);
-            step = 0;
-            fewWords = emptyList();
-            answers = new HashMap<>();
-            sendBotMessage.setActiveCommand(null);
-            sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), examination.toString());
-        }
+    }
+
+    public void startExam(String chatId) {
+        sendBotMessage.setActiveCommand(this);
+        sendBotMessage.sendMessage(chatId, String.format(EXAMINATION_MESSAGE, DEFAULT_LIMIT));
+        fewWords = learningService.getFewWords(DEFAULT_LIMIT);
+        String word = fewWords.get(step++);
+        sendBotMessage.sendMessage(chatId, word);
     }
 }

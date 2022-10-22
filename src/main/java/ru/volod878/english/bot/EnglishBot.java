@@ -26,6 +26,7 @@ public class EnglishBot extends TelegramLongPollingBot {
     @Value("${EnglishBot.token}")
     private String token;
 
+    @Getter
     private final CommandContainer commandContainer;
 
     @Getter
