@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.volod878.english.bot.command.*;
+import ru.volod878.english.domain.repository.UserRepository;
 import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.service.ISendBotMessage;
 import ru.volod878.english.service.IVocabularyService;
@@ -32,11 +33,11 @@ public class EnglishBot extends TelegramLongPollingBot {
     private Command activeCommand;
 
     @Autowired
-    public EnglishBot(IVocabularyService vocabularyService, ILearningService learningService) {
+    public EnglishBot(IVocabularyService vocabularyService, ILearningService learningService, UserRepository userRepository) {
         ISendBotMessage sendBotMessage = new SendBotMessage(this);
         ConcurrentHashMap<String, Command> commandMap = new ConcurrentHashMap<>();
-        commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService));
-        commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage));
+        commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService, userRepository));
+        commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage, userRepository));
         commandMap.put(WORD_INFO.getCommandName(), new WordInfoCommand(sendBotMessage));
         this.commandContainer = new CommandContainer(sendBotMessage, commandMap, vocabularyService);
     }

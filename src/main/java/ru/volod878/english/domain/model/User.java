@@ -4,13 +4,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "user")
+@Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +22,10 @@ public class User {
     private String lastName;
     @Column(name = "telegram_user_id", unique = true)
     private Long telegramUserId;
+
+    public User(org.telegram.telegrambots.meta.api.objects.User user) {
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.telegramUserId = user.getId();
+    }
 }
