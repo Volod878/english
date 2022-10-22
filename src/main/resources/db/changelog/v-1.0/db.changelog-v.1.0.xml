@@ -7,4 +7,5 @@
 
     <include file="01-changeset-create-tables.xml" relativeToChangelogFile="true"/>
     <include file="02-create-learning-table.xml" relativeToChangelogFile="true"/>
+    <include file="03-create-user-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
