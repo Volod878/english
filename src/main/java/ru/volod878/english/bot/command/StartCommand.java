@@ -23,7 +23,8 @@ public class StartCommand implements Command {
     public void execute(Update update) {
         log.info("the {} command is executed", START);
         User user = new User(update.getMessage().getFrom());
-        if (!userRepository.existsByTelegramUserId(user.getId())) {
+        if (!userRepository.existsByTelegramUserId(user.getTelegramUserId())) {
+            log.info("Добавление нового пользователя: {}", user.getTelegramUserId());
             userRepository.save(user);
         }
         sendBotMessage.sendMessage(update.getMessage().getChatId().toString(), START_MESSAGE);

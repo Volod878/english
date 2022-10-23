@@ -19,6 +19,7 @@ public class ExamJobService {
 
     @Scheduled(cron = "${job.scheduled-exam.cron}")
     public void scheduledExam() {
+        log.info("start scheduledExam");
         userRepository.findAll().forEach(user -> {
             ExaminationCommand command = (ExaminationCommand) englishBot.getCommandContainer()
                     .retrieveCommand(EXAMINATION.getCommandName());
