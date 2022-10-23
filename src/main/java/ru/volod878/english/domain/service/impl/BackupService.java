@@ -2,8 +2,6 @@ package ru.volod878.english.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import ru.volod878.english.ApplicationProperties;
 import ru.volod878.english.domain.model.Vocabulary;
@@ -31,7 +29,6 @@ import static ru.volod878.english.util.VocabularyUtil.onlyInFirstByWord;
 public class BackupService implements IBackupService {
     private final ApplicationProperties applicationProperties;
     private final VocabularyRepository vocabularyRepository;
-    private final ResourceLoader resourceLoader;
 
     /**
      * Перед запуском приложения необходимо соотнести текущие состояние БД и backup.
@@ -39,11 +36,11 @@ public class BackupService implements IBackupService {
      */
     @PostConstruct
     private void backup() throws IOException {
-        Resource resource = resourceLoader.getResource(applicationProperties.getBackupPath());
-        if (resource.getFile().exists()) {
+        File backupDirectory = new File(applicationProperties.getBackupPath());
+        if (backupDirectory.exists()) {
             actualization();
         } else {
-            createBackupDate(resource.getFile());
+            createBackupDate(backupDirectory);
         }
     }
 
@@ -72,7 +69,7 @@ public class BackupService implements IBackupService {
     @Override
     public void actualization() {
         try {
-            File backupDb = resourceLoader.getResource(applicationProperties.getBackupDbPath()).getFile();
+            File backupDb = new File(applicationProperties.getBackupDbPath());
             if (backupDb.exists()) {
                 List<Vocabulary> vocabulariesDb = vocabularyRepository.findAll();
                 List<Vocabulary> vocabulariesBackup = fromCsv(backupDb, Vocabulary.class, ';');
@@ -144,7 +141,7 @@ public class BackupService implements IBackupService {
 
     private void createBackupDataBase() throws IOException {
         log.info("Выполняется backup Базы данных");
-        File backupDb = resourceLoader.getResource(applicationProperties.getBackupDbPath()).getFile();
+        File backupDb = new File(applicationProperties.getBackupDbPath());
 
         if ((backupDb.getParentFile().exists() || backupDb.getParentFile().createNewFile())
                 &&
