@@ -40,6 +40,7 @@ public class EnglishBot extends TelegramLongPollingBot {
         commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService, userRepository));
         commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage, userRepository));
         commandMap.put(WORD_INFO.getCommandName(), new WordInfoCommand(sendBotMessage));
+        commandMap.put(STOP.getCommandName(), new StopCommand(userRepository));
         this.commandContainer = new CommandContainer(sendBotMessage, commandMap, vocabularyService);
     }
 
@@ -52,6 +53,8 @@ public class EnglishBot extends TelegramLongPollingBot {
                 String message = update.getMessage().getText().trim();
                 commandContainer.retrieveCommand(message).execute(update);
             }
+        } else if (needStopBot(update)) {
+            commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
         }
     }
 
@@ -67,5 +70,10 @@ public class EnglishBot extends TelegramLongPollingBot {
 
     private boolean isMessageWithText(Update update) {
         return update.hasMessage() && update.getMessage().hasText();
+    }
+
+    private boolean needStopBot(Update update) {
+        return update.hasMyChatMember() &&
+                update.getMyChatMember().getNewChatMember().getStatus().equals("kicked");
     }
 }
