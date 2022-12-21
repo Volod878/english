@@ -17,7 +17,7 @@ public class ExamJobService {
     private final UserRepository userRepository;
     private final EnglishBot englishBot;
 
-    @Scheduled(cron = "${job.scheduled-exam.cron}")
+//    @Scheduled(cron = "${job.scheduled-exam.cron}")
     public void scheduledExam() {
         log.info("start scheduledExam");
         userRepository.findAll().forEach(user -> {
