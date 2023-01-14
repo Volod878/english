@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.volod878.english.bot.command.*;
+import ru.volod878.english.domain.model.User;
 import ru.volod878.english.domain.repository.UserRepository;
 import ru.volod878.english.service.ILearningService;
 import ru.volod878.english.service.ISendBotMessage;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.volod878.english.bot.command.CommandName.*;
 
+@Getter
 @Component
 public class EnglishBot extends TelegramLongPollingBot {
     @Value("${EnglishBot.username}")
@@ -26,10 +28,9 @@ public class EnglishBot extends TelegramLongPollingBot {
     @Value("${EnglishBot.token}")
     private String token;
 
-    @Getter
     private final CommandContainer commandContainer;
+    private final UserRepository userRepository;
 
-    @Getter
     @Setter
     private Command activeCommand;
 
@@ -40,12 +41,17 @@ public class EnglishBot extends TelegramLongPollingBot {
         commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService, userRepository));
         commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage, userRepository));
         commandMap.put(WORD_INFO.getCommandName(), new WordInfoCommand(sendBotMessage));
+        commandMap.put(STOP.getCommandName(), new StopCommand(userRepository));
         this.commandContainer = new CommandContainer(sendBotMessage, commandMap, vocabularyService);
+        this.userRepository = userRepository;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (isMessageWithText(update)) {
+        if (needStopUser(update)) {
+            commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
+            activeCommand = null;
+        } else if (isActiveUserMessage(update)) {
             if (Objects.nonNull(activeCommand)) {
                 activeCommand.execute(update);
             } else {
@@ -65,7 +71,20 @@ public class EnglishBot extends TelegramLongPollingBot {
         return token;
     }
 
-    private boolean isMessageWithText(Update update) {
-        return update.hasMessage() && update.getMessage().hasText();
+    private boolean isActiveUserMessage(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
+            String message = update.getMessage().getText().trim();
+            return user.isActive() || START.getCommandName().equals(message);
+        }
+        return false;
+    }
+
+    private boolean needStopUser(Update update) {
+        return update.hasMyChatMember() &&
+                update.getMyChatMember().getNewChatMember().getStatus().equals("kicked")
+                ||
+                update.hasMessage() && update.getMessage().hasText() &&
+                        update.getMessage().getText().equals(STOP.getCommandName());
     }
 }

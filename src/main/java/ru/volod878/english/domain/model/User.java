@@ -22,10 +22,13 @@ public class User {
     private String lastName;
     @Column(name = "telegram_user_id", unique = true)
     private Long telegramUserId;
+    @Column(name = "active", nullable = false)
+    private boolean active;
 
     public User(org.telegram.telegrambots.meta.api.objects.User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.telegramUserId = user.getId();
+        this.active = true;
     }
 }
