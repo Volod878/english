@@ -2,9 +2,6 @@
 
 ### Telegram bot [English Learn](https://t.me/EngVocabularyTrainBot)
 
-<details>
-<summary>Подробнее ...</summary>
-
 > Бот знает следующие команды:
 > - **/start** - запускает бота
 > - _"any english word"_ - напишите любое английское слово и получите перевод с транскрипцией и голосовое сообщение в ответ
@@ -12,16 +9,13 @@
 > - **/word_info** = команда пока не доступна
 > - **/stop** = деактивирует бота
 
-</details>
-
 ### REST API
-
 <details>
-<summary>Подробнее ...</summary>
+<summary>
+GET <a href="http://localhost:8888/vocabulary">/vocabulary</a>
+</summary>
 
-> GET http://localhost:8888/vocabulary
->
-> Query example: word = resolve
+> Query example: word=resolve
 >
 > Response example:
 > ```json
@@ -32,9 +26,13 @@
 >     "translates": "решимость, решение, решительность, решать, разрешать, решаться"
 > }
 > ```
+</details>
 
-> POST http://localhost:8888/vocabulary
->
+<details>
+<summary>
+POST <a href="http://localhost:8888/vocabulary">/vocabulary</a>
+</summary>
+
 > Body JSON example:
 > ```json
 > [
@@ -68,21 +66,33 @@
 >     }
 > ]
 > ```
+</details>
 
-> GET http://localhost:8888/audio/uk/mp3
->
-> Query example: fileName = resolve
+<details>
+<summary>
+GET <a href="http://localhost:8888/audio/uk/mp3">/audio/uk/mp3</a>
+</summary>
+
+> Query example: fileName=resolve
 >
 > Response example: file resolve.mp3 (английское произношение)
+</details>
 
-> GET http://localhost:8888/audio/us/mp3
->
-> Query example: fileName = resolve
+<details>
+<summary>
+GET <a href="http://localhost:8888/audio/us/mp3">/audio/us/mp3</a>
+</summary>
+
+> Query example: fileName=resolve
 >
 > Response example: file resolve.mp3 (американское произношение)
+</details>
 
-> GET http://localhost:8888/learning/words/10
->
+<details>
+<summary>
+GET <a href="http://localhost:8888/learning/words/10">/learning/words/10</a>
+</summary>
+
 > Response example:
 > ```json
 > [
@@ -98,10 +108,13 @@
 >    "add"
 > ]
 > ```
+</details>
 
-> POST http://localhost:8888/learning/examination
-> 
->
+<details>
+<summary>
+POST http://localhost:8888/learning/examination
+</summary>
+
 > Body JSON example:
 > ```json
 > {
@@ -238,7 +251,10 @@
 >     ]
 > }
 > ```
-
 </details>
+
+### Используемые технологии
+
+> 
 
 ### [План разработки](FUTURE.md)
