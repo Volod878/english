@@ -18,10 +18,16 @@ public class ExaminationResponse {
 
     @Override
     public String toString() {
-        return result + "\n\n" +
-                "<b>Правильные ответы</b>\n" +
-                right.stream().map(dto -> dto.toString() + '\n').collect(Collectors.joining()) + '\n' +
-                "<b>Неправильные ответы</b>\n" +
-                wrong.stream().map(dto -> dto.toString() + '\n').collect(Collectors.joining());
+        StringBuilder stringBuilder = new StringBuilder(result).append("\n\n");
+        if (!right.isEmpty()) {
+            stringBuilder.append("<b>Правильные ответы</b>\n")
+                    .append(right.stream().map(dto -> dto.toString() + '\n').collect(Collectors.joining()))
+                    .append('\n');
+        }
+        if (!wrong.isEmpty()) {
+            stringBuilder.append("<b>Неправильные ответы</b>\n")
+                    .append(wrong.stream().map(dto -> dto.toString() + '\n').collect(Collectors.joining()));
+        }
+        return stringBuilder.toString();
     }
 }
