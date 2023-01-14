@@ -48,19 +48,16 @@ public class EnglishBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (isMessageWithText(update)) {
-            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
-            if (!user.isActive()) {
-                return;
-            }
+        if (needStopUser(update)) {
+            commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
+            activeCommand = null;
+        } else if (isActiveUserMessage(update)) {
             if (Objects.nonNull(activeCommand)) {
                 activeCommand.execute(update);
             } else {
                 String message = update.getMessage().getText().trim();
                 commandContainer.retrieveCommand(message).execute(update);
             }
-        } else if (needStopBot(update)) {
-            commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
         }
     }
 
@@ -74,12 +71,20 @@ public class EnglishBot extends TelegramLongPollingBot {
         return token;
     }
 
-    private boolean isMessageWithText(Update update) {
-        return update.hasMessage() && update.getMessage().hasText();
+    private boolean isActiveUserMessage(Update update) {
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
+            String message = update.getMessage().getText().trim();
+            return user.isActive() || START.getCommandName().equals(message);
+        }
+        return false;
     }
 
-    private boolean needStopBot(Update update) {
+    private boolean needStopUser(Update update) {
         return update.hasMyChatMember() &&
-                update.getMyChatMember().getNewChatMember().getStatus().equals("kicked");
+                update.getMyChatMember().getNewChatMember().getStatus().equals("kicked")
+                ||
+                update.hasMessage() && update.getMessage().hasText() &&
+                        update.getMessage().getText().equals(STOP.getCommandName());
     }
 }
