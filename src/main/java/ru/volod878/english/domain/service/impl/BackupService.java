@@ -11,6 +11,7 @@ import ru.volod878.english.domain.service.IBackupService;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,7 +95,9 @@ public class BackupService implements IBackupService {
                                                 .findFirst()
                                                 .map(Vocabulary::getWord)
                                                 .orElse(null)));
-                        createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                        List<Vocabulary> vocabularies = vocabularyRepository.findAll();
+                        vocabularies.sort(Comparator.comparingInt(Vocabulary::getId));
+                        createCsv(backupDb, vocabularies, ';');
                     }
                 }
 
@@ -119,7 +122,9 @@ public class BackupService implements IBackupService {
                             });
                     vocabularyRepository.saveAll(vocabulariesOnlyInBackup);
                     if (!vocabularyConflictAndOnlyBackup.get(conflict).isEmpty()) {
-                        createCsv(backupDb, vocabularyRepository.findAll(), ';');
+                        List<Vocabulary> vocabularies = vocabularyRepository.findAll();
+                        vocabularies.sort(Comparator.comparingInt(Vocabulary::getId));
+                        createCsv(backupDb, vocabularies, ';');
                     }
                 }
             } else {
@@ -147,6 +152,7 @@ public class BackupService implements IBackupService {
                 &&
                 backupDb.createNewFile()) {
             List<Vocabulary> vocabularies = vocabularyRepository.findAll();
+            vocabularies.sort(Comparator.comparingInt(Vocabulary::getId));
             createCsv(backupDb, vocabularies, ';');
         }
     }
