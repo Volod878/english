@@ -2,6 +2,9 @@
 
 ### Telegram bot [English Learn](https://t.me/EngVocabularyTrainBot)
 
+<details>
+<summary>Подробнее ...</summary>
+
 > Бот знает следующие команды:
 > - **/start** - запускает бота
 > - _"any english word"_ - напишите любое английское слово и получите перевод с транскрипцией и голосовое сообщение в ответ
@@ -9,7 +12,12 @@
 > - **/word_info** = команда пока не доступна
 > - **/stop** = деактивирует бота
 
+</details>
+
 ### REST API
+
+<details>
+<summary>Подробнее ...</summary>
 
 > GET http://localhost:8888/vocabulary
 >
@@ -230,3 +238,7 @@
 >     ]
 > }
 > ```
+
+</details>
+
+### [План разработки](FUTURE.md)
