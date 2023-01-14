@@ -2,6 +2,13 @@
 
 ### Telegram bot [English Learn](https://t.me/EngVocabularyTrainBot)
 
+> Бот знает следующие команды:
+> - **/start** - запускает бота
+> - _"any english word"_ - напишите любое английское слово и получите перевод с транскрипцией и голосовое сообщение в ответ
+> - **/examination** = Запускает экзамен
+> - **/word_info** = команда пока не доступна
+> - **/stop** = деактивирует бота
+
 ### REST API
 
 > GET http://localhost:8888/vocabulary
