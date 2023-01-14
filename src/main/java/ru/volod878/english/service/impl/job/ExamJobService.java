@@ -17,13 +17,13 @@ public class ExamJobService {
     private final UserRepository userRepository;
     private final EnglishBot englishBot;
 
-//    @Scheduled(cron = "${job.scheduled-exam.cron}")
+    @Scheduled(cron = "${job.scheduled-exam.cron}")
     public void scheduledExam() {
         log.info("start scheduledExam");
-        userRepository.findAllByActiveIsTrue().forEach(user -> {
+        userRepository.findAllByActiveIsTrueAndActiveCommandIsNull().forEach(user -> {
             ExaminationCommand command = (ExaminationCommand) englishBot.getCommandContainer()
                     .retrieveCommand(EXAMINATION.getCommandName());
-            command.startExam(String.valueOf(user.getTelegramUserId()));
+            command.startExam(user);
         });
     }
 }

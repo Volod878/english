@@ -1,7 +1,6 @@
 package ru.volod878.english.bot;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,9 +30,6 @@ public class EnglishBot extends TelegramLongPollingBot {
     private final CommandContainer commandContainer;
     private final UserRepository userRepository;
 
-    @Setter
-    private Command activeCommand;
-
     @Autowired
     public EnglishBot(IVocabularyService vocabularyService, ILearningService learningService, UserRepository userRepository) {
         ISendBotMessage sendBotMessage = new SendBotMessage(this);
@@ -50,12 +46,15 @@ public class EnglishBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (needStopUser(update)) {
             commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
-            activeCommand = null;
         } else if (isActiveUserMessage(update)) {
-            if (Objects.nonNull(activeCommand)) {
-                activeCommand.execute(update);
+            Long telegramUserId = update.getMessage().getFrom().getId();
+            User user = userRepository.findByTelegramUserId(telegramUserId);
+            String message = update.getMessage().getText().trim();
+            if (Objects.nonNull(user.getActiveCommand()) && (message.charAt(0) != '/')) {
+                commandContainer.retrieveCommand(user.getActiveCommand().getCommandName()).execute(update);
             } else {
-                String message = update.getMessage().getText().trim();
+                user.setActiveCommand(null);
+                userRepository.save(user);
                 commandContainer.retrieveCommand(message).execute(update);
             }
         }
