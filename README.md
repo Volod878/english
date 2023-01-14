@@ -5,9 +5,9 @@
 > Бот знает следующие команды:
 > - **/start** - запускает бота
 > - _"any english word"_ - напишите любое английское слово и получите перевод с транскрипцией и голосовое сообщение в ответ
-> - **/examination** = запускает экзамен
-> - **/word_info** = команда пока не доступна
-> - **/stop** = деактивирует бота
+> - **/examination** - запускает экзамен
+> - **/word_info** - команда пока не доступна
+> - **/stop** - деактивирует бота
 
 ### REST API
 <details>
@@ -27,13 +27,12 @@ GET <a href="http://localhost:8888/vocabulary">/vocabulary</a>
 > }
 > ```
 </details>
-
 <details>
 <summary>
 POST <a href="http://localhost:8888/vocabulary">/vocabulary</a>
 </summary>
 
-> Body JSON example:
+> Request JSON example:
 > ```json
 > [
 >     "abbreviation",
@@ -67,7 +66,6 @@ POST <a href="http://localhost:8888/vocabulary">/vocabulary</a>
 > ]
 > ```
 </details>
-
 <details>
 <summary>
 GET <a href="http://localhost:8888/audio/uk/mp3">/audio/uk/mp3</a>
@@ -77,7 +75,6 @@ GET <a href="http://localhost:8888/audio/uk/mp3">/audio/uk/mp3</a>
 >
 > Response example: file resolve.mp3 (английское произношение)
 </details>
-
 <details>
 <summary>
 GET <a href="http://localhost:8888/audio/us/mp3">/audio/us/mp3</a>
@@ -87,7 +84,6 @@ GET <a href="http://localhost:8888/audio/us/mp3">/audio/us/mp3</a>
 >
 > Response example: file resolve.mp3 (американское произношение)
 </details>
-
 <details>
 <summary>
 GET <a href="http://localhost:8888/learning/words/10">/learning/words/10</a>
@@ -109,13 +105,12 @@ GET <a href="http://localhost:8888/learning/words/10">/learning/words/10</a>
 > ]
 > ```
 </details>
-
 <details>
 <summary>
-POST http://localhost:8888/learning/examination
+POST <a href="http://localhost:8888/learning/examination">/learning/examination</a>
 </summary>
 
-> Body JSON example:
+> Request JSON example:
 > ```json
 > {
 >     "she": "она",
@@ -253,8 +248,17 @@ POST http://localhost:8888/learning/examination
 > ```
 </details>
 
-### Используемые технологии
+### Запуск сервиса
 
 > 
+
+### Используемые технологии
+
+> - Java 8
+> - Spring Boot 2
+> - Telegram Bot API
+> - PostgreSQL, Liquibase, JPA, Hibernate
+> - Maven, Tomcat
+> - Json Jackson, Lombok, Jsoup, Slf4j, AssertJ
 
 ### [План разработки](FUTURE.md)
