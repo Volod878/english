@@ -23,6 +23,7 @@ public class StopCommand implements Command {
                 update.getMessage().getFrom().getId();
         User user = userRepository.findByTelegramUserId(telegramUserId);
         user.setActive(false);
+        user.setActiveCommand(null);
         userRepository.save(user);
     }
 }
