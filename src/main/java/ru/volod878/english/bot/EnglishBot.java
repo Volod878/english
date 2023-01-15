@@ -44,7 +44,9 @@ public class EnglishBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (needStopUser(update)) {
+        if (isFirstStart(update)) {
+            commandContainer.retrieveCommand(START.getCommandName()).execute(update);
+        } else if (needStopUser(update)) {
             commandContainer.retrieveCommand(STOP.getCommandName()).execute(update);
         } else if (isActiveUserMessage(update)) {
             Long telegramUserId = update.getMessage().getFrom().getId();
@@ -58,6 +60,14 @@ public class EnglishBot extends TelegramLongPollingBot {
                 commandContainer.retrieveCommand(message).execute(update);
             }
         }
+    }
+
+    private boolean isFirstStart(Update update) {
+        if (update.hasMessage()) {
+            User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
+            return Objects.isNull(user);
+        }
+        return false;
     }
 
     @Override
