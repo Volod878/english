@@ -13,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByTelegramUserId(Long telegramUserId);
 
-    List<User> findAllByActiveIsTrueAndActiveCommandIsNull();
+    List<User> findAllByActiveIsTrue();
 }

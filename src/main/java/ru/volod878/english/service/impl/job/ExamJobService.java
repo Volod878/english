@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.volod878.english.bot.EnglishBot;
+import ru.volod878.english.bot.command.Command;
 import ru.volod878.english.bot.command.ExaminationCommand;
 import ru.volod878.english.domain.repository.UserRepository;
 
@@ -20,10 +21,13 @@ public class ExamJobService {
     @Scheduled(cron = "${job.scheduled-exam.cron}")
     public void scheduledExam() {
         log.info("start scheduledExam");
-        userRepository.findAllByActiveIsTrueAndActiveCommandIsNull().forEach(user -> {
-            ExaminationCommand command = (ExaminationCommand) englishBot.getCommandContainer()
+        userRepository.findAllByActiveIsTrue().forEach(user -> {
+            Command command = englishBot.getCommandContainer()
                     .retrieveCommand(EXAMINATION.getCommandName());
-            command.startExam(user);
+            if (command instanceof ExaminationCommand) {
+                ExaminationCommand examinationCommand = (ExaminationCommand) command;
+                examinationCommand.startExam(user);
+            }
         });
     }
 }
