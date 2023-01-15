@@ -24,6 +24,7 @@ public class ExaminationCommand implements Command {
             "Вам будет предоставлено %s слов которые нужно перевести.\n" +
                     "После каждого слова отправьте в ответ перевод.\n" +
                     "Если походящих ответов несколько - пишите через запятую";
+    public static final String RESTART_EXAM_MESSAGE = "Попробуйте выполнить задание заново";
     private static final int DEFAULT_LIMIT = 5;
 
     private static final Map<User, Exam> exams = new ConcurrentHashMap<>();
@@ -33,7 +34,6 @@ public class ExaminationCommand implements Command {
         User user = userRepository.findByTelegramUserId(update.getMessage().getFrom().getId());
         String message = update.getMessage().getText().trim();
         if ((message.charAt(0) == '/') || !exams.containsKey(user)) {
-            exams.put(user, new Exam());
             startExam(user);
         } else {
             Exam exam = exams.get(user);
@@ -44,8 +44,12 @@ public class ExaminationCommand implements Command {
     }
 
     public void startExam(User user) {
+        if (Objects.nonNull(user.getActiveCommand())) {
+            sendBotMessage.sendMessage(String.valueOf(user.getTelegramUserId()), RESTART_EXAM_MESSAGE);
+        }
         sendBotMessage.sendMessage(String.valueOf(user.getTelegramUserId()),
                 String.format(EXAMINATION_MESSAGE, DEFAULT_LIMIT));
+        exams.put(user, new Exam());
         String word = exams.get(user).start(learningService.getFewWords(DEFAULT_LIMIT));
         sendBotMessage.sendMessage(String.valueOf(user.getTelegramUserId()), word);
         user.setActiveCommand(EXAMINATION);
