@@ -11,4 +11,5 @@
     <include file="04-create-word-learning-refer-on-user.xml" relativeToChangelogFile="true"/>
     <include file="05-add-column-to-user.xml" relativeToChangelogFile="true"/>
     <include file="06-add-column-to-user.xml" relativeToChangelogFile="true"/>
+    <include file="07-drop-index.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
