@@ -23,7 +23,8 @@ public class ExaminationCommand implements Command {
     public static final String EXAMINATION_MESSAGE =
             "Вам будет предоставлено %s слов которые нужно перевести.\n" +
                     "После каждого слова отправьте в ответ перевод.\n" +
-                    "Если походящих ответов несколько - пишите через запятую";
+                    "Если подходящих ответов несколько - пишите через запятую.\n" +
+                    "Например: здравствуйте, привет";
     public static final String RESTART_EXAM_MESSAGE = "Попробуйте выполнить задание заново";
     private static final int DEFAULT_LIMIT = 5;
 

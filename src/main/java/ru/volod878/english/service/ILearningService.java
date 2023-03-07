@@ -16,4 +16,6 @@ public interface ILearningService {
     ExaminationResponse examination(Map<String, String> answers, User user);
 
     List<WordLearning> info();
+
+    List<WordLearning> info(User user);
 }
