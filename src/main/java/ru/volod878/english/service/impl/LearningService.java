@@ -93,4 +93,9 @@ public class LearningService implements ILearningService {
     public List<WordLearning> info() {
         return wordLearningRepository.findAll();
     }
+
+    @Override
+    public List<WordLearning> info(User user) {
+        return wordLearningRepository.findAllByUser(user);
+    }
 }

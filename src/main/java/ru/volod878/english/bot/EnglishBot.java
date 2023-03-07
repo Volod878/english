@@ -36,7 +36,7 @@ public class EnglishBot extends TelegramLongPollingBot {
         ConcurrentHashMap<String, Command> commandMap = new ConcurrentHashMap<>();
         commandMap.put(EXAMINATION.getCommandName(), new ExaminationCommand(sendBotMessage, learningService, userRepository));
         commandMap.put(START.getCommandName(), new StartCommand(sendBotMessage, userRepository));
-        commandMap.put(WORD_INFO.getCommandName(), new WordInfoCommand(sendBotMessage));
+        commandMap.put(STAT.getCommandName(), new StatCommand(sendBotMessage, learningService, userRepository));
         commandMap.put(STOP.getCommandName(), new StopCommand(userRepository));
         this.commandContainer = new CommandContainer(sendBotMessage, commandMap, vocabularyService);
         this.userRepository = userRepository;
